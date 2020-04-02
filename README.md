@@ -34,8 +34,8 @@ resource "spinnaker_pipeline" "terraform_example" {
 _Requires Go to be installed on the system._
 
 ```
-$ env GO111MODULE=on go get github.com/armory-io/terraform-provider-spinnaker
-$ cd $GOPATH/src/github.com/armory-io/terraform-provider-spinnaker
+$ env GO111MODULE=on go get github.com/mercari/terraform-provider-spinnaker
+$ cd $GOPATH/src/github.com/mercari/terraform-provider-spinnaker
 $ env GO111MODULE=on go build
 ```
 

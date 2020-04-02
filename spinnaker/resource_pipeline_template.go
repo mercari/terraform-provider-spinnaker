@@ -7,9 +7,9 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/armory-io/terraform-provider-spinnaker/spinnaker/api"
 	"github.com/ghodss/yaml"
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/mercari/terraform-provider-spinnaker/spinnaker/api"
 )
 
 func resourcePipelineTemplate() *schema.Resource {

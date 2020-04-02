@@ -19,8 +19,9 @@ func TestAccDataSourceSpinnakerApplication_basic(t *testing.T) {
 				Config: testAccSpinnakerApplication_basic(rName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckSpinnakerApplicationExists(resourceName),
-					resource.TestCheckResourceAttr(resourceName, "application", rName),
+					resource.TestCheckResourceAttr(resourceName, "name", rName),
 					resource.TestCheckResourceAttr(resourceName, "email", "acceptance@test.com"),
+					resource.TestCheckResourceAttr(resourceName, "instance_port", "80"),
 				),
 			},
 		},

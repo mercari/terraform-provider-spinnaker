@@ -6,17 +6,39 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/mitchellh/mapstructure"
 	gate "github.com/spinnaker/spin/cmd/gateclient"
 )
 
-func GetApplication(client *gate.GatewayClient, applicationName string, dest interface{}) error {
-	app, resp, err := client.ApplicationControllerApi.GetApplicationUsingGET(client.Context, applicationName, map[string]interface{}{})
+// CreateApplicationTask represents the Spinnaker createApplication Application API object
+type CreateApplicationTask map[string]interface{}
+
+// NewCreateApplicationTask returns a Spinanker createApplication Application API object
+// by passed resource data configued
+func NewCreateApplicationTask(d *schema.ResourceData) CreateApplicationTask {
+	app := map[string]interface{}{}
+	app["name"] = d.Get("name").(string)
+	app["email"] = d.Get("email").(string)
+	app["instancePort"] = d.Get("instance_port").(int)
+
+	createAppTask := map[string]interface{}{
+		"job":         []interface{}{map[string]interface{}{"type": "createApplication", "application": app}},
+		"application": app["name"],
+		"description": fmt.Sprintf("Create Application: %s", app["name"]),
+	}
+
+	return createAppTask
+}
+
+// GetApplication gets an application from Spinnaker Gate
+func GetApplication(client *gate.GatewayClient, appName string, dest interface{}) error {
+	app, resp, err := client.ApplicationControllerApi.GetApplicationUsingGET(client.Context, appName, map[string]interface{}{})
 	if resp != nil {
 		if resp != nil && resp.StatusCode == http.StatusNotFound {
-			return fmt.Errorf("Application '%s' not found\n", applicationName)
+			return fmt.Errorf("Application '%s' not found", appName)
 		} else if resp.StatusCode != http.StatusOK {
-			return fmt.Errorf("Encountered an error getting application, status code: %d\n", resp.StatusCode)
+			return fmt.Errorf("Encountered an error getting application, status code: %d", resp.StatusCode)
 		}
 	}
 
@@ -31,19 +53,8 @@ func GetApplication(client *gate.GatewayClient, applicationName string, dest int
 	return nil
 }
 
-func CreateApplication(client *gate.GatewayClient, applicationName, email string) error {
-	app := map[string]interface{}{
-		"instancePort": 80,
-		"name":         applicationName,
-		"email":        email,
-	}
-
-	createAppTask := map[string]interface{}{
-		"job":         []interface{}{map[string]interface{}{"type": "createApplication", "application": app}},
-		"application": applicationName,
-		"description": fmt.Sprintf("Create Application: %s", applicationName),
-	}
-
+// CreateApplication creates passed application
+func CreateApplication(client *gate.GatewayClient, createAppTask CreateApplicationTask) error {
 	ref, _, err := client.TaskControllerApi.TaskUsingPOST1(client.Context, createAppTask)
 	if err != nil {
 		return err
@@ -59,7 +70,7 @@ func CreateApplication(client *gate.GatewayClient, applicationName, email string
 		id := toks[len(toks)-1]
 
 		task, resp, err = client.TaskControllerApi.GetTaskUsingGET1(client.Context, id)
-		attempts += 1
+		attempts++
 		time.Sleep(time.Duration(attempts*attempts) * time.Second)
 	}
 
@@ -67,27 +78,28 @@ func CreateApplication(client *gate.GatewayClient, applicationName, email string
 		return err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return fmt.Errorf("Encountered an error saving application, status code: %d\n", resp.StatusCode)
+		return fmt.Errorf("Encountered an error saving application, status code: %d", resp.StatusCode)
 	}
 	if !taskSucceeded(task) {
-		return fmt.Errorf("Encountered an error saving application, task output was: %v\n", task)
+		return fmt.Errorf("Encountered an error saving application, task output was: %v", task)
 	}
 
 	return nil
 }
 
-func DeleteAppliation(client *gate.GatewayClient, applicationName string) error {
+// DeleteApplication deletes an application by application name
+func DeleteApplication(client *gate.GatewayClient, appName string) error {
 	jobSpec := map[string]interface{}{
 		"type": "deleteApplication",
 		"application": map[string]interface{}{
-			"name": applicationName,
+			"name": appName,
 		},
 	}
 
 	deleteAppTask := map[string]interface{}{
 		"job":         []interface{}{jobSpec},
-		"application": applicationName,
-		"description": fmt.Sprintf("Delete Application: %s", applicationName),
+		"application": appName,
+		"description": fmt.Sprintf("Delete Application: %s", appName),
 	}
 
 	_, resp, err := client.TaskControllerApi.TaskUsingPOST1(client.Context, deleteAppTask)
@@ -97,7 +109,7 @@ func DeleteAppliation(client *gate.GatewayClient, applicationName string) error 
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("Encountered an error deleting application, status code: %d\n", resp.StatusCode)
+		return fmt.Errorf("Encountered an error deleting application, status code: %d", resp.StatusCode)
 	}
 
 	return nil

@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/armory-io/terraform-provider-spinnaker/spinnaker/api"
 	"github.com/hashicorp/terraform/helper/acctest"
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/mercari/terraform-provider-spinnaker/spinnaker/api"
 )
 
 func TestAccResourceSourceSpinnakerApplication_basic(t *testing.T) {
@@ -26,8 +26,9 @@ func TestAccResourceSourceSpinnakerApplication_basic(t *testing.T) {
 				Config: testAccSpinnakerApplication_basic(rName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckSpinnakerApplicationExists(resourceName),
-					resource.TestCheckResourceAttr(resourceName, "application", rName),
+					resource.TestCheckResourceAttr(resourceName, "name", rName),
 					resource.TestCheckResourceAttr(resourceName, "email", "acceptance@test.com"),
+					resource.TestCheckResourceAttr(resourceName, "instance_port", "80"),
 				),
 			},
 		},
@@ -41,8 +42,8 @@ func testAccCheckSpinnakerApplicatioDestroy(n string) resource.TestCheckFunc {
 			return fmt.Errorf("Application not found, application: %s", n)
 		}
 
-		application := rs.Primary.ID
-		if application == "" {
+		appName := rs.Primary.ID
+		if appName == "" {
 			return fmt.Errorf("No Application ID is set")
 		}
 
@@ -51,7 +52,7 @@ func testAccCheckSpinnakerApplicatioDestroy(n string) resource.TestCheckFunc {
 
 		retry := 5
 		for {
-			if err := api.GetApplication(client, application, app); err != nil {
+			if err := api.GetApplication(client, appName, app); err != nil {
 				if strings.Contains(err.Error(), "not found") {
 					return nil
 				}
@@ -74,7 +75,7 @@ func testAccCheckSpinnakerApplicatioDestroy(n string) resource.TestCheckFunc {
 			}
 		}
 
-		return fmt.Errorf("Spinnaker Application still exists, application: %s", application)
+		return fmt.Errorf("Spinnaker Application still exists, application: %s", appName)
 	}
 }
 
@@ -113,7 +114,7 @@ func testAccCheckSpinnakerApplicationExists(n string) resource.TestCheckFunc {
 func testAccSpinnakerApplication_basic(rName string) string {
 	return fmt.Sprintf(`
 resource "spinnaker_application" "test" {
-	application  = %q
+	name  = %q
 	email = "acceptance@test.com"
 }
 `, rName)
