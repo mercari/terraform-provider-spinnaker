@@ -15,18 +15,29 @@ func resourceSpinnakerApplication() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"name": {
+				Description:  "Name of the Application",
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validateSpinnakerApplicationName,
 			},
 			"email": {
-				Type:     schema.TypeString,
-				Required: true,
+				Description: "Email of the owner",
+				Type:        schema.TypeString,
+				Required:    true,
+			},
+			"cloud_providers": {
+				Description: "Cloud providers that is used by the application",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 			"instance_port": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  defaultInstancePort,
+				Description: "Default port of the Spinnaker generated links",
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Default:     defaultInstancePort,
 			},
 		},
 		Create: resourceSpinnakerApplicationCreate,
@@ -57,7 +68,11 @@ func resourceSpinnakerApplicationCreate(d *schema.ResourceData, meta interface{}
 	client := clientConfig.client
 	appName := d.Get("name").(string)
 
-	task := api.NewCreateApplicationTask(d)
+	task, err := api.NewCreateApplicationTask(d)
+	if err != nil {
+		return err
+	}
+
 	if err := api.CreateApplication(client, task); err != nil {
 		return err
 	}
@@ -84,7 +99,7 @@ func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) 
 		d.Set("accounts", v)
 	}
 	if v := app.Attributes.CloudProviders; v != "" {
-		d.Set("cloud_providers", v)
+		d.Set("cloud_providers", strings.Split(v, ","))
 	}
 	if v := app.Attributes.InstancePort; v != 0 {
 		d.Set("instance_port", v)
@@ -94,6 +109,16 @@ func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) 
 }
 
 func resourceSpinnakerApplicationUpdate(d *schema.ResourceData, meta interface{}) error {
+	clientConfig := meta.(gateConfig)
+	client := clientConfig.client
+	task, err := api.NewCreateApplicationTask(d)
+	if err != nil {
+		return err
+	}
+
+	if err := api.CreateApplication(client, task); err != nil {
+		return err
+	}
 	return resourceSpinnakerApplicationRead(d, meta)
 }
 
@@ -136,4 +161,8 @@ func resourceSpinnakerApplicationImport(d *schema.ResourceData, meta interface{}
 		return nil, err
 	}
 	return []*schema.ResourceData{d}, nil
+}
+
+func flattenCloudProviders(input string) []string {
+	return strings.Split(input, ",")
 }

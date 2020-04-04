@@ -3,7 +3,9 @@ package spinnaker
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -28,7 +30,52 @@ func TestAccResourceSourceSpinnakerApplication_basic(t *testing.T) {
 					testAccCheckSpinnakerApplicationExists(resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", rName),
 					resource.TestCheckResourceAttr(resourceName, "email", "acceptance@test.com"),
-					resource.TestCheckResourceAttr(resourceName, "instance_port", "80"),
+					resource.TestCheckResourceAttr(resourceName, "instance_port", strconv.Itoa(defaultInstancePort)),
+				),
+			},
+		},
+	})
+}
+
+func TestAccResourceSourceSpinnakerApplication_instancePort(t *testing.T) {
+	resourceName := "spinnaker_application.test"
+	rand.Seed(time.Now().UnixNano())
+	rName := acctest.RandomWithPrefix("tf-acc-test")
+	rPort := rand.Intn(8000) + 1 // avoid 0
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckSpinnakerApplicatioDestroy(resourceName),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccSpinnakerApplication_instancePort(rName, rPort),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSpinnakerApplicationExists(resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", rName),
+					resource.TestCheckResourceAttr(resourceName, "email", "acceptance@test.com"),
+					resource.TestCheckResourceAttr(resourceName, "instance_port", strconv.Itoa(rPort)),
+				),
+			},
+		},
+	})
+}
+
+func TestAccResourceSourceSpinnakerApplication_cloudProviders(t *testing.T) {
+	resourceName := "spinnaker_application.test"
+	rName := acctest.RandomWithPrefix("tf-acc-test")
+	cloudProvider := "kubernetes"
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckSpinnakerApplicatioDestroy(resourceName),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccSpinnakerApplication_cloudProvider(rName, cloudProvider),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSpinnakerApplicationExists(resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", rName),
+					resource.TestCheckResourceAttr(resourceName, "email", "acceptance@test.com"),
+					resource.TestCheckResourceAttr(resourceName, "instance_port", strconv.Itoa(defaultInstancePort)),
 				),
 			},
 		},
@@ -118,4 +165,25 @@ resource "spinnaker_application" "test" {
 	email = "acceptance@test.com"
 }
 `, rName)
+}
+
+func testAccSpinnakerApplication_instancePort(rName string, instance_port int) string {
+	return fmt.Sprintf(`
+resource "spinnaker_application" "test" {
+	name          = %q
+	email         = "acceptance@test.com"
+	instance_port = %d
+}
+`, rName, instance_port)
+}
+
+// Use single cloud provider for testing
+func testAccSpinnakerApplication_cloudProvider(rName string, provider string) string {
+	return fmt.Sprintf(`
+resource "spinnaker_application" "test" {
+	name          =  %q
+	email         =  "acceptance@test.com"
+	cloud_providers = [%q]
+}
+`, rName, provider)
 }
