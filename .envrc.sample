@@ -1,2 +1,2 @@
 export GATE_ENDPOINT=
-export TF_LOG=DEBUG=
+export TF_LOG=DEBUG
