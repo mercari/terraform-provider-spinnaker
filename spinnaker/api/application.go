@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -81,6 +82,9 @@ func GetApplication(client *gate.GatewayClient, appName string, dest interface{}
 	}
 
 	if err != nil {
+		log.Println("app", app)
+		log.Println("resp", resp)
+		log.Println("err", err)
 		return err
 	}
 

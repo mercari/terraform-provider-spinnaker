@@ -76,8 +76,11 @@ resource "spinnaker_application" "my_app" {
 }
 ```
 #### Argument Reference
+
 * `application` - Application name
 * `email` - Owner email
+* `cloud_providers` - (Optional) - Comma sepreted cloud providers
+* `instance_port` - (Optional) - Port of the Spinnaker generated links
 
 ### `spinnaker_pipeline`
 

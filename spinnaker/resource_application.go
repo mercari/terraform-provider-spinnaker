@@ -85,6 +85,10 @@ func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) 
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
 	appName := d.Get("name").(string)
+	if appName == "" {
+		appName = d.Id()
+	}
+
 	app := &applicationRead{}
 	if err := api.GetApplication(client, appName, app); err != nil {
 		return err
