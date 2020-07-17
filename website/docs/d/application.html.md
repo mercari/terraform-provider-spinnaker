@@ -26,3 +26,7 @@ data "spinnaker_application" "my_app" {}
  * `last_modified_by` - ID of the user last modified
  * `name` - Name of the user
  * `user` - User associated to application
+ * `permissions` - List of application level permissions
+     * `read` - List of `READ` permission's users, teams 
+     * `execute` - List of `EXECUTE` permission's user, teams
+     * `write` - List of `WRITE` permission's users, teams

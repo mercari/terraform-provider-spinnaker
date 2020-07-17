@@ -23,6 +23,7 @@ func TestValidateApplicationName(t *testing.T) {
 		"invalid_name",
 		"",
 	}
+
 	for _, v := range invalidNames {
 		_, errors := validateSpinnakerApplicationName(v, "application")
 		if len(errors) == 0 {

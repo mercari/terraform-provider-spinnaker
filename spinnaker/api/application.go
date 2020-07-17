@@ -27,6 +27,11 @@ var (
 		"tencentcloud": {50, `^[a-zA-Z_0-9.\u4e00-\u9fa5-]*$`},
 		"titus":        {250, `^[a-zA-Z_0-9.]*$`},
 	}
+
+	// SupportedAccesses is a list for Spinnaker application level
+	// See details here
+	// ref: https://spinnaker.io/setup/security/authorization/
+	SupportedAccesses = []string{"READ", "WRITE", "EXECUTE"}
 )
 
 // applicationNameConstraint ...
@@ -59,6 +64,31 @@ func NewCreateApplicationTask(d *schema.ResourceData) (CreateApplicationTask, er
 		}
 
 		app["cloudProviders"] = strings.Join(cloudProviders, ",")
+	}
+
+	if v, ok := d.GetOkExists("permission"); ok {
+		var permissions = map[string][]string{}
+
+		inputs := v.([]interface{})
+		for _, input := range inputs {
+			input := input.(map[string]interface{})
+			accesses := convToStringArray(input["accesses"].([]interface{}))
+			if err := validateSpinnakerApplicationAccess(accesses); err != nil {
+				return nil, err
+			}
+			for _, access := range accesses {
+				if user := input["user"].(string); user != "" {
+					if len(permissions[access]) == 0 {
+						permissions[access] = []string{user}
+						continue
+					}
+
+					permissions[access] = append(permissions[access], user)
+				}
+			}
+		}
+
+		app["permissions"] = permissions
 	}
 
 	createAppTask := map[string]interface{}{
@@ -201,4 +231,32 @@ func validateSpinnakerApplicationNameByCloudProvider(appName, provider string) e
 	}
 
 	return fmt.Errorf("cloud provider %s is not supported", provider)
+}
+
+func validateSpinnakerApplicationAccess(accesses []string) error {
+	for _, access := range accesses {
+		var validAccess bool
+		for _, v := range SupportedAccesses {
+			if access == v {
+				validAccess = true
+			}
+		}
+
+		if !validAccess {
+			return fmt.Errorf("access %s is not supported", access)
+		}
+	}
+
+	return nil
+}
+
+func convToStringArray(in []interface{}) []string {
+	out := make([]string, len(in))
+	for i, v := range in {
+		if str, ok := v.(string); ok {
+			out[i] = str
+		}
+	}
+
+	return out
 }

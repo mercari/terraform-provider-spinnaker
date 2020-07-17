@@ -30,6 +30,10 @@ func datasourceApplication() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"permission": {
+				Type: schema.TypeMap,
+				Computed: true,
+			},
 		},
 		Read: resourceSpinnakerApplicationRead,
 	}
