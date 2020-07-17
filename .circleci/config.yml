@@ -44,13 +44,19 @@ jobs:
       - run: curl -sL https://git.io/goreleaser | bash
 
 workflows:
+  version: 2
   main:
-    jobs:
-      - test
-      - acceptance-test
-      - release:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /[0-9]+(\.[0-9]+)*(-.*)*/
+    build_and_test:
+      jobs:
+        - build
+        - test
+    release:
+      jobs:
+        - test
+        - acceptance-test
+        - release:
+            filters:
+              branches:
+                ignore: /.*/
+              tags:
+                only: /[0-9]+(\.[0-9]+)*(-.*)*/
