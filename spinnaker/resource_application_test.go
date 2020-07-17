@@ -3,15 +3,17 @@ package spinnaker
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/armory-io/terraform-provider-spinnaker/spinnaker/api"
 	"github.com/hashicorp/terraform/helper/acctest"
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
+	"github.com/mercari/terraform-provider-spinnaker/spinnaker/api"
 )
 
 func TestAccResourceSourceSpinnakerApplication_basic(t *testing.T) {
@@ -26,8 +28,54 @@ func TestAccResourceSourceSpinnakerApplication_basic(t *testing.T) {
 				Config: testAccSpinnakerApplication_basic(rName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckSpinnakerApplicationExists(resourceName),
-					resource.TestCheckResourceAttr(resourceName, "application", rName),
+					resource.TestCheckResourceAttr(resourceName, "name", rName),
 					resource.TestCheckResourceAttr(resourceName, "email", "acceptance@test.com"),
+					resource.TestCheckResourceAttr(resourceName, "instance_port", strconv.Itoa(defaultInstancePort)),
+				),
+			},
+		},
+	})
+}
+
+func TestAccResourceSourceSpinnakerApplication_instancePort(t *testing.T) {
+	resourceName := "spinnaker_application.test"
+	rand.Seed(time.Now().UnixNano())
+	rName := acctest.RandomWithPrefix("tf-acc-test")
+	rPort := rand.Intn(8000) + 1 // avoid 0
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckSpinnakerApplicatioDestroy(resourceName),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccSpinnakerApplication_instancePort(rName, rPort),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSpinnakerApplicationExists(resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", rName),
+					resource.TestCheckResourceAttr(resourceName, "email", "acceptance@test.com"),
+					resource.TestCheckResourceAttr(resourceName, "instance_port", strconv.Itoa(rPort)),
+				),
+			},
+		},
+	})
+}
+
+func TestAccResourceSourceSpinnakerApplication_cloudProviders(t *testing.T) {
+	resourceName := "spinnaker_application.test"
+	rName := acctest.RandomWithPrefix("tf-acc-test")
+	cloudProvider := "kubernetes"
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckSpinnakerApplicatioDestroy(resourceName),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccSpinnakerApplication_cloudProvider(rName, cloudProvider),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSpinnakerApplicationExists(resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", rName),
+					resource.TestCheckResourceAttr(resourceName, "email", "acceptance@test.com"),
+					resource.TestCheckResourceAttr(resourceName, "instance_port", strconv.Itoa(defaultInstancePort)),
 				),
 			},
 		},
@@ -41,8 +89,8 @@ func testAccCheckSpinnakerApplicatioDestroy(n string) resource.TestCheckFunc {
 			return fmt.Errorf("Application not found, application: %s", n)
 		}
 
-		application := rs.Primary.ID
-		if application == "" {
+		appName := rs.Primary.ID
+		if appName == "" {
 			return fmt.Errorf("No Application ID is set")
 		}
 
@@ -51,7 +99,7 @@ func testAccCheckSpinnakerApplicatioDestroy(n string) resource.TestCheckFunc {
 
 		retry := 5
 		for {
-			if err := api.GetApplication(client, application, app); err != nil {
+			if err := api.GetApplication(client, appName, app); err != nil {
 				if strings.Contains(err.Error(), "not found") {
 					return nil
 				}
@@ -74,7 +122,7 @@ func testAccCheckSpinnakerApplicatioDestroy(n string) resource.TestCheckFunc {
 			}
 		}
 
-		return fmt.Errorf("Spinnaker Application still exists, application: %s", application)
+		return fmt.Errorf("Spinnaker Application still exists, application: %s", appName)
 	}
 }
 
@@ -113,8 +161,29 @@ func testAccCheckSpinnakerApplicationExists(n string) resource.TestCheckFunc {
 func testAccSpinnakerApplication_basic(rName string) string {
 	return fmt.Sprintf(`
 resource "spinnaker_application" "test" {
-	application  = %q
+	name  = %q
 	email = "acceptance@test.com"
 }
 `, rName)
+}
+
+func testAccSpinnakerApplication_instancePort(rName string, instance_port int) string {
+	return fmt.Sprintf(`
+resource "spinnaker_application" "test" {
+	name          = %q
+	email         = "acceptance@test.com"
+	instance_port = %d
+}
+`, rName, instance_port)
+}
+
+// Use single cloud provider for testing
+func testAccSpinnakerApplication_cloudProvider(rName string, provider string) string {
+	return fmt.Sprintf(`
+resource "spinnaker_application" "test" {
+	name          =  %q
+	email         =  "acceptance@test.com"
+	cloud_providers = [%q]
+}
+`, rName, provider)
 }
