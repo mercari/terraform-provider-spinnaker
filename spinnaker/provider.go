@@ -35,9 +35,9 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"spinnaker_application":              resourceSpinnakerApplication(),
-			"spinnaker_pipeline":                 resourcePipeline(),
-			"spinnaker_pipeline_template":        resourcePipelineTemplate(),
+			"spinnaker_application":       resourceSpinnakerApplication(),
+			"spinnaker_pipeline":          resourcePipeline(),
+			"spinnaker_pipeline_template": resourcePipelineTemplate(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"spinnaker_pipeline": datasourcePipeline(),
