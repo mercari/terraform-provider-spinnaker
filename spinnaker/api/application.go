@@ -83,6 +83,14 @@ func NewCreateApplicationTask(d *schema.ResourceData) (CreateApplicationTask, er
 						continue
 					}
 
+					if users := permissions[access]; len(users) > 0{
+						for _, v := range users {
+							if user == v {
+								return nil, fmt.Errorf("user %s permission's declare duplicated", user)
+							}
+						}
+					}
+
 					permissions[access] = append(permissions[access], user)
 				}
 			}
