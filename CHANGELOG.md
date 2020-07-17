@@ -1,14 +1,14 @@
 ## 0.2.0 (Unreleased)
 ### Improvements
 
-* Added `cloud_providers`, `instance_port` to `spinnaker_applicaiton` resource (https://github.com/mercari/terraform-provider-spinnaker/pull/12)
-* Added data resources for these resources (https://github.com/mercari/terraform-provider-spinnaker/pull/12)
+* Added `cloud_providers`, `instance_port` to `spinnaker_applicaiton` resource ([#12](https://github.com/mercari/terraform-provider-spinnaker/pull/12))
+* Added data resources for these resources ([#12](https://github.com/mercari/terraform-provider-spinnaker/pull/12))
     * `spinnaker_application`
     * `spinnaker_pipeline`
 
 ### Breaking changes
 
-* Removed `spinnaker_pipeline_template_config` resources.
+* Removed `spinnaker_pipeline_template_config` resources. ([#11](https://github.com/mercari/terraform-provider-spinnaker/pull/21))
 
 ## 0.1.0 (March 23th, 2020)
 
