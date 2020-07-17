@@ -7,7 +7,7 @@ import (
 func datasourceApplication() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"application": {
+			"name": {
 				Type:         schema.TypeString,
 				ForceNew:     true,
 				Required:     true,
@@ -27,22 +27,6 @@ func datasourceApplication() *schema.Resource {
 				Computed: true,
 			},
 			"instance_port": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"last_modified_by": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"name": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"repo_type": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"user": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
