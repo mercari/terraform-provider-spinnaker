@@ -1,10 +1,11 @@
 ## 0.2.0 (Unreleased)
 ### Improvements
 
-* Added `cloud_providers`, `instance_port` to `spinnaker_applicaiton` resource ([#12](https://github.com/mercari/terraform-provider-spinnaker/pull/12))
-* Added data resources for these resources ([#12](https://github.com/mercari/terraform-provider-spinnaker/pull/12))
+* Add `cloud_providers`, `instance_port` to `spinnaker_applicaiton` resource ([#12](https://github.com/mercari/terraform-provider-spinnaker/pull/12))
+* Add data resources for these resources ([#12](https://github.com/mercari/terraform-provider-spinnaker/pull/12))
     * `spinnaker_application`
     * `spinnaker_pipeline`
+* Add application permission([#22](https://github.com/mercari/terraform-provider-spinnaker/pull/22))
 
 ### Breaking changes
 
