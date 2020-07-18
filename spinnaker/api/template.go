@@ -19,7 +19,7 @@ func CreatePipelineTemplate(client *gate.GatewayClient, template interface{}) er
 	}
 
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusAccepted {
-		return fmt.Errorf("Encountered an error saving template, status code: %d\n", resp.StatusCode)
+		return fmt.Errorf("Encountered an error saving template, status code: %data-resources\n", resp.StatusCode)
 	}
 
 	return nil
@@ -37,7 +37,7 @@ func GetPipelineTemplate(client *gate.GatewayClient, templateID string, dest int
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("Encountered an error getting pipeline template %s, status code: %d\n",
+		return fmt.Errorf("Encountered an error getting pipeline template %s, status code: %data-resources\n",
 			templateID,
 			resp.StatusCode,
 		)
@@ -61,7 +61,7 @@ func DeletePipelineTemplate(client *gate.GatewayClient, templateID string) error
 	}
 
 	if resp.StatusCode != http.StatusAccepted {
-		return fmt.Errorf("Encountered an error deleting pipeline template %s, status code: %d\n",
+		return fmt.Errorf("Encountered an error deleting pipeline template %s, status code: %data-resources\n",
 			templateID,
 			resp.StatusCode)
 	}
@@ -76,7 +76,7 @@ func UpdatePipelineTemplate(client *gate.GatewayClient, templateID string, templ
 	}
 
 	if resp.StatusCode != http.StatusAccepted {
-		return fmt.Errorf("Encountered an error updating pipeline template %s, status code: %d\n",
+		return fmt.Errorf("Encountered an error updating pipeline template %s, status code: %data-resources\n",
 			templateID,
 			resp.StatusCode)
 	}

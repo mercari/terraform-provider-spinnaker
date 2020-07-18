@@ -1,12 +1,4 @@
----
-layout: "spinnaker"
-page_title: "Spinnaker: spinnaker_pipeline"
-sidebar_current: "docs-spinnaker-datasource-pipeline"
-description: |-
-  Get information on Spinnaker pipeline.
----
-
-# spinnaker_pipeline
+# spinnaker_pipeline Data Source
 
 Use this data source to retrieve information about Spinnaker pipeline.
 

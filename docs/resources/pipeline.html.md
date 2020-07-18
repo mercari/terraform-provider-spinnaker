@@ -1,12 +1,4 @@
----
-layout: "spinnaker"
-page_title: "Spinnaker: spinnaker_pipeline"
-sidebar_current: "docs-spinnaker-resource-pipeline"
-description: |-
-  Provides a Spinnaker pipeline resource.
----
-
-# spinnaker_pipeline
+# spinnaker_pipeline Resource
 
 Provides a Spinnaker pipeline resource.
 

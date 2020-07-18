@@ -143,7 +143,7 @@ func testAccCheckSpinnakerApplicationExists(n string) resource.TestCheckFunc {
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					return resource.RetryableError(fmt.Errorf("application does not exit"))
 				} else if resp.StatusCode != http.StatusOK {
-					return resource.NonRetryableError(fmt.Errorf("encountered an error getting application, status code: %d", resp.StatusCode))
+					return resource.NonRetryableError(fmt.Errorf("encountered an error getting application, status code: %data-resources", resp.StatusCode))
 				}
 			}
 			if err != nil {
@@ -172,7 +172,7 @@ func testAccSpinnakerApplication_instancePort(rName string, instance_port int) s
 resource "spinnaker_application" "test" {
 	name          = %q
 	email         = "acceptance@test.com"
-	instance_port = %d
+	instance_port = %data-resources
 }
 `, rName, instance_port)
 }
