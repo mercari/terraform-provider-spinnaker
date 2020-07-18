@@ -1,6 +1,7 @@
 package spinnaker
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -39,6 +40,14 @@ func resourceSpinnakerApplication() *schema.Resource {
 				Optional:    true,
 				Default:     defaultInstancePort,
 			},
+			"permission": {
+				Description: "Application level permissions",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem: &schema.Resource{
+					Schema: getPermissionSchema(),
+				},
+			},
 		},
 		Create: resourceSpinnakerApplicationCreate,
 		Read:   resourceSpinnakerApplicationRead,
@@ -57,10 +66,17 @@ type applicationRead struct {
 }
 
 type applicationAttributes struct {
-	Accounts       string `json:"accounts"`
-	CloudProviders string `json:"cloudproviders"`
-	Email          string `json:"email"`
-	InstancePort   int    `json:"instancePort"`
+	Accounts       string      `json:"accounts"`
+	CloudProviders string      `json:"cloudproviders"`
+	Email          string      `json:"email"`
+	InstancePort   int         `json:"instancePort"`
+	Permissions    *Permissions `json:"permissions"`
+}
+
+type Permissions struct {
+	Read    []string `json:"READ"`
+	Execute []string `json:"EXECUTE"`
+	Write   []string `json:"WRITE"`
 }
 
 func resourceSpinnakerApplicationCreate(d *schema.ResourceData, meta interface{}) error {
@@ -107,6 +123,14 @@ func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) 
 	}
 	if v := app.Attributes.InstancePort; v != 0 {
 		d.Set("instance_port", v)
+	}
+	if v := app.Attributes.Permissions; v != nil {
+		terraformPermissions, err := buildTerraformPermissions(v)
+		if err != nil {
+			return err
+		}
+
+		d.Set("permissions", terraformPermissions)
 	}
 
 	return nil
@@ -167,6 +191,42 @@ func resourceSpinnakerApplicationImport(d *schema.ResourceData, meta interface{}
 	return []*schema.ResourceData{d}, nil
 }
 
-func flattenCloudProviders(input string) []string {
-	return strings.Split(input, ",")
+func getPermissionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"user": {
+			Type:        schema.TypeString,
+			Description: "User ID",
+			Required: true,
+		},
+		"accesses": {
+			Type:        schema.TypeList,
+			Description: "List of access",
+			Elem:        &schema.Schema{Type: schema.TypeString},
+			Required:    true,
+		},
+	}
 }
+
+func buildTerraformPermissions(permissions *Permissions) (*map[string][]string, error) {
+	users := map[string][]string{}
+	for _, rUser := range permissions.Read {
+		users[rUser] = append(users[rUser], "READ")
+	}
+
+	for _, xUser := range permissions.Execute {
+		users[xUser] = append(users[xUser], "EXECUTE")
+	}
+
+	for _, wUser := range permissions.Read {
+		users[wUser] = append(users[wUser], "WRITE")
+	}
+
+	for user, accesses := range users {
+		if len(accesses) > 3 {
+			return nil, fmt.Errorf("more than 3 access granted for %s", user)
+		}
+	}
+
+	return &users, nil
+}
+

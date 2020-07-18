@@ -70,6 +70,7 @@ func TestAccDataSourceSpinnakerApplication_cloudProviders(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "name", rName),
 					resource.TestCheckResourceAttr(resourceName, "email", "acceptance@test.com"),
 					resource.TestCheckResourceAttr(resourceName, "instance_port", strconv.Itoa(defaultInstancePort)),
+					resource.TestCheckResourceAttr(resourceName, "cloud_providers", cloudProvider),
 				),
 			},
 		},
