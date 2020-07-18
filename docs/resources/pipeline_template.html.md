@@ -1,12 +1,4 @@
----
-layout: "spinnaker"
-page_title: "Spinnaker: spinnaker_pipeline_template"
-sidebar_current: "docs-spinnaker-resource-pipeline-template"
-description: |-
-  Provides a Spinnaker managed pipeline template resource.
----
-
-# spinnaker_pipeline_template
+# spinnaker_pipeline_template Resource
 
 Provides a Spinnaker pipeline resource.
 

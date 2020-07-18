@@ -115,7 +115,7 @@ func GetApplication(client *gate.GatewayClient, appName string, dest interface{}
 		if resp != nil && resp.StatusCode == http.StatusNotFound {
 			return fmt.Errorf("Application '%s' not found", appName)
 		} else if resp.StatusCode != http.StatusOK {
-			return fmt.Errorf("Encountered an error getting application, status code: %d", resp.StatusCode)
+			return fmt.Errorf("Encountered an error getting application, status code: %data-resources", resp.StatusCode)
 		}
 	}
 
@@ -158,7 +158,7 @@ func CreateApplication(client *gate.GatewayClient, createAppTask CreateApplicati
 		return err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return fmt.Errorf("Encountered an error saving application, status code: %d", resp.StatusCode)
+		return fmt.Errorf("Encountered an error saving application, status code: %data-resources", resp.StatusCode)
 	}
 	if !taskSucceeded(task) {
 		return fmt.Errorf("Encountered an error saving application, task output was: %v", task)
@@ -189,7 +189,7 @@ func DeleteApplication(client *gate.GatewayClient, appName string) error {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("Encountered an error deleting application, status code: %d", resp.StatusCode)
+		return fmt.Errorf("Encountered an error deleting application, status code: %data-resources", resp.StatusCode)
 	}
 
 	return nil
@@ -232,7 +232,7 @@ func validateSpinnakerApplicationNameByCloudProvider(appName, provider string) e
 		}
 
 		if c := len(appName); c > regex.maxLength {
-			return fmt.Errorf("application name %s for cloud provider %s is more than its limit %d", appName, provider, c)
+			return fmt.Errorf("application name %s for cloud provider %s is more than its limit %data-resources", appName, provider, c)
 		}
 
 		return nil

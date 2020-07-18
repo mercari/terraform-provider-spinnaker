@@ -16,7 +16,7 @@ func CreatePipeline(client *gate.GatewayClient, pipeline interface{}) error {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("Encountered an error saving pipeline, status code: %d\n", resp.StatusCode)
+		return fmt.Errorf("Encountered an error saving pipeline, status code: %data-resources\n", resp.StatusCode)
 	}
 
 	return nil
@@ -37,7 +37,7 @@ func GetPipeline(client *gate.GatewayClient, applicationName, pipelineName strin
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return jsonMap, fmt.Errorf("Encountered an error getting pipeline in pipeline %s with name %s, status code: %d\n",
+		return jsonMap, fmt.Errorf("Encountered an error getting pipeline in pipeline %s with name %s, status code: %data-resources\n",
 			applicationName,
 			pipelineName,
 			resp.StatusCode)
@@ -62,7 +62,7 @@ func UpdatePipeline(client *gate.GatewayClient, pipelineID string, pipeline inte
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("Encountered an error saving pipeline, status code: %d\n", resp.StatusCode)
+		return fmt.Errorf("Encountered an error saving pipeline, status code: %data-resources\n", resp.StatusCode)
 	}
 
 	return nil
@@ -76,7 +76,7 @@ func DeletePipeline(client *gate.GatewayClient, applicationName, pipelineName st
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("Encountered an error deleting pipeline, status code: %d\n", resp.StatusCode)
+		return fmt.Errorf("Encountered an error deleting pipeline, status code: %data-resources\n", resp.StatusCode)
 	}
 
 	return nil

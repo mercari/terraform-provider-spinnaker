@@ -1,12 +1,4 @@
----
-layout: "spinnaker"
-page_title: "Spinnaker: spinnaker_application"
-sidebar_current: "docs-spinnaker-resource-application"
-description: |-
-  Provides a Spinnaker application resource.
----
-
-# spinnaker_application
+# spinnaker_application Resource
 
 Provides a Spinnaker application resource.
 
@@ -32,12 +24,11 @@ The following arguments are supported.
 * `instance_port` - (Optional) Port of the Spinnaker generated links. Default to `80`.
 * `permission` - (Optional) Nested block describing a application permission configuration. You have to enable [Authorization(RBAC)](https://spinnaker.io/setup/security/authorization/) for your Spinnaker to use this feature.
   
-### Nested `permission` block
+## Attribute Reference 
 
-Nested `permission` block will have the following structure:
-
-* `user` - (Required) ID of the user. The ID type depends on the authorization methods. For example, the ID will be the email address if you use G Suite. Also, if you use GitHub Teams the ID will be the team name.   
-* `accesses` - (Required) List of the access permission. The options are `READ`, `EXECUTE` and `WRITE`.
+* `permission` block will have the following structure.
+    * `user` - (Required) ID of the user. The ID type depends on the authorization methods. For example, the ID will be the email address if you use G Suite. Also, if you use GitHub Teams the ID will be the team name.   
+    * `accesses` - (Required) List of the access permission. The options are `READ`, `EXECUTE` and `WRITE`.
   
 ## Import
 

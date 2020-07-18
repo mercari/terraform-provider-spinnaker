@@ -1,11 +1,3 @@
----
-layout: "spinnaker"
-page_title: "Provider: Spinnaker"
-sidebar_current: "docs-spinnaker-index"
-description: |-
-  The Spinnaker provider is used to interact with the Spinnaker resources. The provider needs to be configured with the proper credentials before it can be used.
----
-
 # Spinnaker Provider
 
 The [Spinnaker](https://spinnaker.io/) provider is used to interact with the

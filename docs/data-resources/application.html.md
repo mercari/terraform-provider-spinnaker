@@ -1,12 +1,4 @@
----
-layout: "spinnaker"
-page_title: "Spinnaker: spinnaker_application"
-sidebar_current: "docs-spinnaker-datasource-application"
-description: |-
-  Get information on Spinnaker application.
----
-
-# spinnaker_application
+# spinnaker_application Data Source
 
 Use this data source to retrieve information about Spinnaker application.
 

@@ -9,13 +9,13 @@ This provider is maintained internally by the [@KeisukeYamashita](https://github
 
 ## Roadmap
 
-Our roadmap for expanding support in Terraform for Spinnaker resources can be found in our [Roadmap](docs/ROADMAP.md).
+Our roadmap for expanding support in Terraform for Spinnaker resources can be found in our [Roadmap](./ROADMAP.md).
 
 ## Frequently Asked Questions
 
-Responses to our most frequently asked questions can be found in our [FAQ](docs/FAQ.md )
+Responses to our most frequently asked questions can be found in our [FAQ](./FAQ.md )
 
 ## Contributing
 
 We appreciate your help!
-To contribute, please read the contribution guidelines: [Contributing to Terraform - Spinnaker Provider](docs/CONTRIBUTING.md)
+To contribute, please read the contribution guidelines: [Contributing to Terraform - Spinnaker Provider](./CONTRIBUTING.md)
