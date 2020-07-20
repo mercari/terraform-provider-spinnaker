@@ -14,8 +14,6 @@ resource "spinnaker_application" "my_app" {
 
 ## Argument Reference
 
-~> **Be careful!** You can accidentally lock yourself out of your Spinnaker application using `permission` attribute. One user or team should obtain `write` permission to edit the application after creation.
-
 The following arguments are supported.
 
 * `application` - (Required) The Name of the application.
@@ -26,7 +24,9 @@ The following arguments are supported.
   
 ## Attribute Reference 
 
-* `permission` block will have the following structure.
+~> **Be careful!** You can accidentally lock yourself out of your Spinnaker application using `permission` attribute. One user or team should obtain `write` permission to edit the application after creation.
+
+* `permission` - this block will have the following structure.
     * `user` - (Required) ID of the user. The ID type depends on the authorization methods. For example, the ID will be the email address if you use G Suite. Also, if you use GitHub Teams the ID will be the team name.   
     * `accesses` - (Required) List of the access permission. The options are `READ`, `EXECUTE` and `WRITE`.
   

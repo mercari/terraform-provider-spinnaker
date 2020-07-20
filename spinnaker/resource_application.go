@@ -45,7 +45,7 @@ func resourceSpinnakerApplication() *schema.Resource {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Elem: &schema.Resource{
-					Schema: getPermissionSchema(),
+					Schema: getApplicationPermissionSchema(),
 				},
 			},
 		},
@@ -66,10 +66,10 @@ type applicationRead struct {
 }
 
 type applicationAttributes struct {
-	Accounts       string      `json:"accounts"`
-	CloudProviders string      `json:"cloudproviders"`
-	Email          string      `json:"email"`
-	InstancePort   int         `json:"instancePort"`
+	Accounts       string       `json:"accounts"`
+	CloudProviders string       `json:"cloudproviders"`
+	Email          string       `json:"email"`
+	InstancePort   int          `json:"instancePort"`
 	Permissions    *Permissions `json:"permissions"`
 }
 
@@ -191,12 +191,12 @@ func resourceSpinnakerApplicationImport(d *schema.ResourceData, meta interface{}
 	return []*schema.ResourceData{d}, nil
 }
 
-func getPermissionSchema() map[string]*schema.Schema {
+func getApplicationPermissionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"user": {
 			Type:        schema.TypeString,
 			Description: "User ID",
-			Required: true,
+			Required:    true,
 		},
 		"accesses": {
 			Type:        schema.TypeList,
@@ -229,4 +229,3 @@ func buildTerraformPermissions(permissions *Permissions) (*map[string][]string, 
 
 	return &users, nil
 }
-
