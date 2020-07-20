@@ -4,7 +4,7 @@
 
 ### Improvements
 
+* Refactor Spinnaker Provider arguments.
 * Add permission configuration attribute to `spinnaker_application`.
-* Update `spinnaker_pipeline` and `spinnaker_pipeline_template` to Terraform native declarements. Currently, we are passing the pipeline and the pipeline template contenst by JSON. 
-* Add Spinnaker managed pipeline features.
-* Introduce [Renovate bot](https://renovate.whitesourcesoftware.com/) to manage dependencies.
+* Introduce [Dependabot](https://dependabot.com/) to manage dependencies.
+* Add `spinnaker_project` resource and data source.

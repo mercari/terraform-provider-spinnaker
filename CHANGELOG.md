@@ -7,6 +7,7 @@
     * `spinnaker_pipeline`
 * Add application permission([#22](https://github.com/mercari/terraform-provider-spinnaker/pull/22))
 * Migrate legacy provider docs([#24](https://github.com/mercari/terraform-provider-spinnaker/pull/24))
+* Add `spinnaker_project` resource/data source([#25](https://github.com/mercari/terraform-provider-spinnaker/pull/25))
 
 ### Breaking changes
 
