@@ -16,10 +16,10 @@ func resourceSpinnakerApplication() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"application": {
-				Description:  "Name of the Application",
-				Type:         schema.TypeString,
-				Deprecated:   "use `name` instead",
-				Optional: true,
+				Description:   "Name of the Application",
+				Type:          schema.TypeString,
+				Deprecated:    "use `name` instead",
+				Optional:      true,
 				ConflictsWith: []string{"name"},
 			},
 			"name": {
@@ -146,8 +146,6 @@ func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) 
 
 		d.Set("permissions", terraformPermissions)
 	}
-
-
 
 	return nil
 }
