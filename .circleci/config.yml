@@ -44,11 +44,12 @@ jobs:
       - run: curl -sL https://git.io/goreleaser | bash
 
 workflows:
-  version: 2
-  build_and_test:
+  build-and-test:
     jobs:
       - test
-      - acceptance-test
+      - acceptance-test:
+          requires:
+            - test
   release:
     jobs:
       - test
