@@ -15,10 +15,17 @@ const (
 func resourceSpinnakerApplication() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
+			"application": {
+				Description:  "Name of the Application",
+				Type:         schema.TypeString,
+				Deprecated:   "use `name` instead",
+				Optional: true,
+				ConflictsWith: []string{"name"},
+			},
 			"name": {
 				Description:  "Name of the Application",
 				Type:         schema.TypeString,
-				Required:     true,
+				Optional:     true,
 				ValidateFunc: validateSpinnakerApplicationName,
 			},
 			"email": {
@@ -100,10 +107,7 @@ func resourceSpinnakerApplicationCreate(d *schema.ResourceData, meta interface{}
 func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) error {
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
-	appName := d.Get("name").(string)
-	if appName == "" {
-		appName = d.Id()
-	}
+	appName := getApplicationName(d)
 
 	app := &applicationRead{}
 	if err := api.GetApplication(client, appName, app); err != nil {
@@ -113,6 +117,16 @@ func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) 
 	if app == nil {
 		d.SetId("")
 		return nil
+	}
+
+	if v := app.Name; v != "" {
+		if _, deprecated := d.GetOk("application"); deprecated {
+			d.Set("name", nil)
+			d.Set("application", v)
+		} else {
+			d.Set("name", v)
+			d.Set("application", nil)
+		}
 	}
 
 	if v := app.Attributes.Accounts; v != "" {
@@ -132,6 +146,8 @@ func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) 
 
 		d.Set("permissions", terraformPermissions)
 	}
+
+
 
 	return nil
 }
@@ -166,7 +182,7 @@ func resourceSpinnakerApplicationDelete(d *schema.ResourceData, meta interface{}
 func resourceSpinnakerApplicationExists(d *schema.ResourceData, meta interface{}) (bool, error) {
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
-	appName := d.Get("name").(string)
+	appName := getApplicationName(d)
 
 	var app applicationRead
 	if err := api.GetApplication(client, appName, &app); err != nil {
@@ -182,6 +198,17 @@ func resourceSpinnakerApplicationExists(d *schema.ResourceData, meta interface{}
 	}
 
 	return true, nil
+}
+
+func getApplicationName(d *schema.ResourceData) string {
+	name := d.Get("name").(string)
+	if name == "" {
+		if name = d.Get("application").(string); name == "" {
+			name = d.Id()
+		}
+	}
+
+	return name
 }
 
 func resourceSpinnakerApplicationImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {

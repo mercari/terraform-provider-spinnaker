@@ -7,8 +7,8 @@ Provides a Spinnaker application resource.
 ```hcl
 # Create a new Spinnaker application
 resource "spinnaker_application" "my_app" {
-    application = "my-app"
-    email       = "keisuke.yamashita@mercari.com"
+    name  = "my-app"
+    email = "keisuke.yamashita@mercari.com"
 }
 ```
 
@@ -16,7 +16,8 @@ resource "spinnaker_application" "my_app" {
 
 The following arguments are supported.
 
-* `application` - (Required) The Name of the application.
+* `application` - (Deprecated) Name of the application. Use `name` instead.
+* `name` - (Required) Name of the application.
 * `email` - (Required) Email of the owner.
 * `cloud_providers` - (Optional) List of the cloud providers.
 * `instance_port` - (Optional) Port of the Spinnaker generated links. Default to `80`.
