@@ -15,6 +15,12 @@ const (
 func resourceSpinnakerApplication() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
+			"application": {
+				Description: "Name of the Application",
+				Type:        schema.TypeString,
+				Deprecated:  "name",
+				Optional:    true,
+			},
 			"name": {
 				Description:  "Name of the Application",
 				Type:         schema.TypeString,
@@ -102,7 +108,10 @@ func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) 
 	client := clientConfig.client
 	appName := d.Get("name").(string)
 	if appName == "" {
-		appName = d.Id()
+		appName := d.Get("application").(string)
+		if appName == "" {
+			appName = d.Id()
+		}
 	}
 
 	app := &applicationRead{}
