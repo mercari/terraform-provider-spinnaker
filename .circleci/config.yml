@@ -48,14 +48,6 @@ workflows:
   build_and_test:
     jobs:
       - test
-      - acceptance-test
-  release:
-    jobs:
-      - test
-      - acceptance-test
-      - release:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /[0-9]+(\.[0-9]+)*(-.*)*/
+      - acceptance-test:
+          requires:
+            - test
