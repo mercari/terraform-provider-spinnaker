@@ -1,15 +1,5 @@
 name: Test
-on:
-  pull_request:
-  push:
-    paths:
-      - '**'
-      - '!.envrc.sample'
-      - '!**.md'
-      - '.go-version'
-      - '.gitignore'
-      - 'docs/**'
-      - '.dependabot'
+on: [push]
 
 jobs:
   test:
