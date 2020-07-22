@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     tags:
-      - '*'
+      - "[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   test:
@@ -23,5 +23,31 @@ jobs:
             ${{ runner.os }}-go-
       - name: Install modules
         run: go get -d -v
+      - name: Build provider
+        run: go build -v
+      - name: Run Test
+        run: go test -v ./...
+  publish:
+    name: publish
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13
+      - uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - name: Release provider
-        run: curl -sL https://git.io/goreleaser | bash
+        uses: goreleaser/goreleaser-action@v1
+        with:
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
