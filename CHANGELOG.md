@@ -1,4 +1,6 @@
-## 0.2.0 (Unreleased)
+## 0.2.1 (Unreleased)
+
+## 0.2.0 (July 22, 2020)
 ### Improvements
 
 * Add `cloud_providers`, `instance_port` to `spinnaker_applicaiton` resource ([#12](https://github.com/mercari/terraform-provider-spinnaker/pull/12))
