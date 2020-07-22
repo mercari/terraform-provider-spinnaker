@@ -9,9 +9,16 @@ import (
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
+			"server": {
+				Type: schema.TypeString,
+				Description: "URL for Spinnaker Gate",
+				Deprecated: "use `gate_endpoint` instead",
+				Optional: true,
+				ConflictsWith: []string{"gate_endpoint"},
+			},
 			"gate_endpoint": {
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional: true,
 				Description: "URL for Spinnaker Gate",
 				DefaultFunc: schema.EnvDefaultFunc("GATE_ENDPOINT", nil),
 			},
@@ -54,7 +61,13 @@ type gateConfig struct {
 }
 
 func providerConfigureFunc(data *schema.ResourceData) (interface{}, error) {
-	gateEndpoint := data.Get("gate_endpoint").(string)
+	var gateEndpoint string
+	if v, deprecated := data.Get("server").(string); deprecated {
+		gateEndpoint = v
+	} else {
+		gateEndpoint = data.Get("gate_endpoint").(string)
+	}
+
 	config := data.Get("config").(string)
 	ignoreCertErrors := data.Get("ignore_cert_errors").(bool)
 	defaultHeaders := data.Get("default_headers").(string)
