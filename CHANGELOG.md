@@ -1,4 +1,7 @@
 ## 0.2.1 (Unreleased)
+### Bug fixes
+
+* Fixed crash on changes when using deprecated argument `name` for `spinnaker_application`. ([#47](https://github.com/mercari/terraform-provider-spinnaker/pull/47))
 
 ## 0.2.0 (July 22, 2020)
 ### Improvements
