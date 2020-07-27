@@ -89,7 +89,7 @@ type Permissions struct {
 func resourceSpinnakerApplicationCreate(d *schema.ResourceData, meta interface{}) error {
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
-	appName := d.Get("name").(string)
+	appName := api.GetApplicationName(d)
 
 	task, err := api.NewCreateApplicationTask(d)
 	if err != nil {
@@ -107,7 +107,7 @@ func resourceSpinnakerApplicationCreate(d *schema.ResourceData, meta interface{}
 func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) error {
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
-	appName := getApplicationName(d)
+	appName := api.GetApplicationName(d)
 
 	app := &applicationRead{}
 	if err := api.GetApplication(client, appName, app); err != nil {
@@ -167,7 +167,7 @@ func resourceSpinnakerApplicationUpdate(d *schema.ResourceData, meta interface{}
 func resourceSpinnakerApplicationDelete(d *schema.ResourceData, meta interface{}) error {
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
-	appName := d.Get("name").(string)
+	appName := api.GetApplicationName(d)
 
 	if err := api.DeleteApplication(client, appName); err != nil {
 		return err
@@ -180,7 +180,7 @@ func resourceSpinnakerApplicationDelete(d *schema.ResourceData, meta interface{}
 func resourceSpinnakerApplicationExists(d *schema.ResourceData, meta interface{}) (bool, error) {
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
-	appName := getApplicationName(d)
+	appName := api.GetApplicationName(d)
 
 	var app applicationRead
 	if err := api.GetApplication(client, appName, &app); err != nil {
@@ -196,17 +196,6 @@ func resourceSpinnakerApplicationExists(d *schema.ResourceData, meta interface{}
 	}
 
 	return true, nil
-}
-
-func getApplicationName(d *schema.ResourceData) string {
-	name := d.Get("name").(string)
-	if name == "" {
-		if name = d.Get("application").(string); name == "" {
-			name = d.Id()
-		}
-	}
-
-	return name
 }
 
 func resourceSpinnakerApplicationImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {

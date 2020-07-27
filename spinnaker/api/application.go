@@ -47,7 +47,7 @@ type CreateApplicationTask map[string]interface{}
 // by passed resource data configued
 func NewCreateApplicationTask(d *schema.ResourceData) (CreateApplicationTask, error) {
 	app := map[string]interface{}{}
-	app["name"] = d.Get("name").(string)
+	app["name"] = GetApplicationName(d)
 	app["email"] = d.Get("email").(string)
 	app["instancePort"] = d.Get("instance_port").(int)
 
@@ -267,4 +267,15 @@ func convToStringArray(in []interface{}) []string {
 	}
 
 	return out
+}
+
+func GetApplicationName(d *schema.ResourceData) string {
+	name := d.Get("name").(string)
+	if name == "" {
+		if name = d.Get("application").(string); name == "" {
+			name = d.Id()
+		}
+	}
+
+	return name
 }
