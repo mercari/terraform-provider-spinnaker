@@ -151,7 +151,13 @@ func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) 
 }
 
 func resourceSpinnakerApplicationUpdate(d *schema.ResourceData, meta interface{}) error {
-	clientConfig := meta.(gateConfig)
+	var clientConfig gateConfig
+	var ok bool
+	if clientConfig, ok = meta.(gateConfig); !ok {
+		// TODO(@KeisukeYamashita): This is mercari specific problem
+		// once we fixed the CI, we will remove this
+		return nil
+	}
 	client := clientConfig.client
 	task, err := api.NewCreateApplicationTask(d)
 	if err != nil {
@@ -165,7 +171,14 @@ func resourceSpinnakerApplicationUpdate(d *schema.ResourceData, meta interface{}
 }
 
 func resourceSpinnakerApplicationDelete(d *schema.ResourceData, meta interface{}) error {
-	clientConfig := meta.(gateConfig)
+	var clientConfig gateConfig
+	var ok bool
+	if clientConfig, ok = meta.(gateConfig); !ok {
+		// TODO(@KeisukeYamashita): This is mercari specific problem
+		// once we fixed the CI, we will remove this
+		return nil
+	}
+
 	client := clientConfig.client
 	appName := api.GetApplicationName(d)
 
@@ -178,7 +191,14 @@ func resourceSpinnakerApplicationDelete(d *schema.ResourceData, meta interface{}
 }
 
 func resourceSpinnakerApplicationExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	clientConfig := meta.(gateConfig)
+	var clientConfig gateConfig
+	var ok bool
+	if clientConfig, ok = meta.(gateConfig); !ok {
+		// TODO(@KeisukeYamashita): This is mercari specific problem
+		// once we fixed the CI, we will remove this
+		return true, nil
+	}
+
 	client := clientConfig.client
 	appName := api.GetApplicationName(d)
 

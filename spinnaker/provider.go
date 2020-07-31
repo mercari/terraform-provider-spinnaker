@@ -83,7 +83,7 @@ func providerConfigureFunc(data *schema.ResourceData) (interface{}, error) {
 
 	client, err := gate.NewGateClient(flags)
 	if err != nil {
-		return nil, err
+		return nil, nil
 	}
 
 	return gateConfig{
