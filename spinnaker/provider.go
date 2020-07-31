@@ -10,15 +10,15 @@ func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"server": {
-				Type: schema.TypeString,
-				Description: "URL for Spinnaker Gate",
-				Deprecated: "use `gate_endpoint` instead",
-				Optional: true,
+				Type:          schema.TypeString,
+				Description:   "URL for Spinnaker Gate",
+				Deprecated:    "use `gate_endpoint` instead",
+				Optional:      true,
 				ConflictsWith: []string{"gate_endpoint"},
 			},
 			"gate_endpoint": {
 				Type:        schema.TypeString,
-				Optional: true,
+				Optional:    true,
 				Description: "URL for Spinnaker Gate",
 				DefaultFunc: schema.EnvDefaultFunc("GATE_ENDPOINT", nil),
 			},
@@ -43,14 +43,16 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"spinnaker_application":       resourceSpinnakerApplication(),
+			"spinnaker_canary_config":     resourceSpinnakerCanaryConfig(),
 			"spinnaker_pipeline":          resourcePipeline(),
 			"spinnaker_pipeline_template": resourcePipelineTemplate(),
 			"spinnaker_project":           resourceSpinnakerProject(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"spinnaker_application": datasourceApplication(),
-			"spinnaker_pipeline":    datasourcePipeline(),
-			"spinnaker_project":     datasourceProject(),
+			"spinnaker_application":   datasourceApplication(),
+			"spinnaker_canary_config": datasourceCanaryConfig(),
+			"spinnaker_pipeline":      datasourcePipeline(),
+			"spinnaker_project":       datasourceProject(),
 		},
 		ConfigureFunc: providerConfigureFunc,
 	}
