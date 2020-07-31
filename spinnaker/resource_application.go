@@ -105,7 +105,16 @@ func resourceSpinnakerApplicationCreate(d *schema.ResourceData, meta interface{}
 }
 
 func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) error {
-	clientConfig := meta.(gateConfig)
+	var clientConfig gateConfig
+	var ok bool
+	if clientConfig, ok = meta.(gateConfig); !ok {
+		// TODO(@KeisukeYamashita): Remove this. This is mercari specific problem
+		// once we fixed the CI, we will remove this
+		// This is only nil when the gate client failed to initialize
+		// Moreover, this patch will not be released to the main stream
+		return fmt.Errorf("gate client failed to instant")
+	}
+
 	client := clientConfig.client
 	appName := api.GetApplicationName(d)
 
@@ -154,9 +163,11 @@ func resourceSpinnakerApplicationUpdate(d *schema.ResourceData, meta interface{}
 	var clientConfig gateConfig
 	var ok bool
 	if clientConfig, ok = meta.(gateConfig); !ok {
-		// TODO(@KeisukeYamashita): This is mercari specific problem
+		// TODO(@KeisukeYamashita): Remove this. This is mercari specific problem
 		// once we fixed the CI, we will remove this
-		return nil
+		// This is only nil when the gate client failed to initialize
+		// Moreover, this patch will not be released to the main stream
+		return fmt.Errorf("gate client failed to instant")
 	}
 	client := clientConfig.client
 	task, err := api.NewCreateApplicationTask(d)
@@ -174,9 +185,11 @@ func resourceSpinnakerApplicationDelete(d *schema.ResourceData, meta interface{}
 	var clientConfig gateConfig
 	var ok bool
 	if clientConfig, ok = meta.(gateConfig); !ok {
-		// TODO(@KeisukeYamashita): This is mercari specific problem
+		// TODO(@KeisukeYamashita): Remove this. This is mercari specific problem
 		// once we fixed the CI, we will remove this
-		return nil
+		// This is only nil when the gate client failed to initialize
+		// Moreover, this patch will not be released to the main stream
+		return fmt.Errorf("gate client failed to instant")
 	}
 
 	client := clientConfig.client
@@ -194,9 +207,11 @@ func resourceSpinnakerApplicationExists(d *schema.ResourceData, meta interface{}
 	var clientConfig gateConfig
 	var ok bool
 	if clientConfig, ok = meta.(gateConfig); !ok {
-		// TODO(@KeisukeYamashita): This is mercari specific problem
+		// TODO(@KeisukeYamashita): Remove this. This is mercari specific problem
 		// once we fixed the CI, we will remove this
-		return true, nil
+		// This is only nil when the gate client failed to initialize
+		// Moreover, this patch will not be released to the main stream
+		return ok, fmt.Errorf("gate client failed to instant")
 	}
 
 	client := clientConfig.client
