@@ -43,14 +43,16 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"spinnaker_application":       resourceSpinnakerApplication(),
+			"spinnaker_canary_config":     resourceSpinnakerCanaryConfig(),
 			"spinnaker_pipeline":          resourcePipeline(),
 			"spinnaker_pipeline_template": resourcePipelineTemplate(),
 			"spinnaker_project":           resourceSpinnakerProject(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"spinnaker_application": datasourceApplication(),
-			"spinnaker_pipeline":    datasourcePipeline(),
-			"spinnaker_project":     datasourceProject(),
+			"spinnaker_application":   datasourceApplication(),
+			"spinnaker_canary_config": datasourceCanaryConfig(),
+			"spinnaker_pipeline":      datasourcePipeline(),
+			"spinnaker_project":       datasourceProject(),
 		},
 		ConfigureFunc: providerConfigureFunc,
 	}

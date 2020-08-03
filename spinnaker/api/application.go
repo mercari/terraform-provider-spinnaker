@@ -158,7 +158,7 @@ func CreateApplication(client *gate.GatewayClient, createAppTask CreateApplicati
 		return err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return fmt.Errorf("Encountered an error saving application, status code: %data-resources", resp.StatusCode)
+		return fmt.Errorf("Encountered an error saving application, status code: %d", resp.StatusCode)
 	}
 	if !taskSucceeded(task) {
 		return fmt.Errorf("Encountered an error saving application, task output was: %v", task)
