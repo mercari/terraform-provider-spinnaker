@@ -5,7 +5,7 @@
 # Terraform Provider for Spinnaker
 
 The Terraform Spinnaker provider is a plugin for Terraform that allows for the full lifecycle management of Spinnaker resources.   
-This provider is maintained internally by the [@KeisukeYamashita](https://github.com/KeisukeYamashita) and it was originally forked from [armory-io/terraform-provider-spinnaker](https://github.com/armory-io/terraform-provider-spinnaker).
+This provider is maintained internally by [@KeisukeYamashita](https://github.com/KeisukeYamashita) and it was originally forked from [armory-io/terraform-provider-spinnaker](https://github.com/armory-io/terraform-provider-spinnaker).
 
 ## Roadmap
 

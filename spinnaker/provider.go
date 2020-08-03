@@ -64,8 +64,8 @@ type gateConfig struct {
 
 func providerConfigureFunc(data *schema.ResourceData) (interface{}, error) {
 	var gateEndpoint string
-	if v, deprecated := data.Get("server").(string); deprecated {
-		gateEndpoint = v
+	if v, deprecated := data.GetOk("server"); deprecated {
+		gateEndpoint = v.(string)
 	} else {
 		gateEndpoint = data.Get("gate_endpoint").(string)
 	}
