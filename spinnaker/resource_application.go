@@ -2,6 +2,7 @@ package spinnaker
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/hashicorp/terraform/helper/schema"
@@ -139,12 +140,12 @@ func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) 
 		d.Set("instance_port", v)
 	}
 	if v := app.Attributes.Permissions; v != nil {
-		terraformPermissions, err := buildTerraformPermissions(v)
+		tfPermissions, err := buildTerraformPermissions(v)
 		if err != nil {
 			return err
 		}
 
-		d.Set("permissions", terraformPermissions)
+		d.Set("permissions", tfPermissions)
 	}
 
 	return nil
@@ -242,4 +243,13 @@ func buildTerraformPermissions(permissions *Permissions) (*map[string][]string, 
 	}
 
 	return &users, nil
+}
+
+func validateSpinnakerApplicationName(v interface{}, k string) (ws []string, errors []error) {
+	value := v.(string)
+	if !regexp.MustCompile(`^[a-zA-Z0-9-]+$`).MatchString(value) {
+		errors = append(errors, fmt.Errorf("Only alphanumeric characters or '-' allowed in %q", k))
+	}
+
+	return
 }
