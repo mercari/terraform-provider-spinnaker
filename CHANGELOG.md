@@ -1,7 +1,8 @@
 ## 0.2.2 (Unreleased)
 ### Improvements
-* Add `spinnaker_canary_config` resource/data source for defining canary config. ([#54](https://github.com/mercari/terraform-provider-spinnaker/pull/54))
+* Add `spinnaker_canary_config` resource/data source for defining canary config. ([#55](https://github.com/mercari/terraform-provider-spinnaker/pull/55))
     * Note that this currently supports only Cloud Monitoring.
+* Introduce [Terraform Plugin SDK](https://www.terraform.io/docs/extend/plugin-sdk.html). ([#56](https://github.com/mercari/terraform-provider-spinnaker/pull/56))
 
 ### Bug fixes
 * Fixed `gate_endpoint` attribute is not loaded. ([#52](https://github.com/mercari/terraform-provider-spinnaker/pull/52))
