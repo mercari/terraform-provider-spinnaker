@@ -27,7 +27,8 @@ func resourceSpinnakerCanaryConfig() *schema.Resource {
 			"applications": {
 				Description: "List of the application which the canary config belongs",
 				Type:        schema.TypeList,
-				Optional:    true,
+				MaxItems:    1,
+				Required:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"metric": {
@@ -41,6 +42,7 @@ func resourceSpinnakerCanaryConfig() *schema.Resource {
 			"classifier": {
 				Type:        schema.TypeList,
 				Description: "Classification configuration",
+				MaxItems:    1,
 				Required:    true,
 				Elem: &schema.Resource{
 					Schema: getCanaryConfigMetricClassifier(),
@@ -209,29 +211,32 @@ func getCanaryConfigMetricSchema() map[string]*schema.Schema {
 		"name": {
 			Type:        schema.TypeString,
 			Description: "Human readable name of the metric",
-			Elem:        &schema.Schema{Type: schema.TypeString},
 			Required:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"query": {
 			Type:        schema.TypeList,
 			Description: "Query config object for your metric source type",
+			Required:    true,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: getCanaryConfigMetricQuerySchema(),
 			},
-			Required: true,
 		},
 		"analysis_configurations": {
 			Type:        schema.TypeList,
 			Description: "Analysis configuration",
+			MaxItems:    1,
+			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: getCanaryConfigMetricQueryAnalysisConfiguration(),
 			},
-			Optional: true,
 		},
 		"groups": {
 			Type:        schema.TypeList,
 			Description: "List of the group which this query belongs to",
 			Required:    true,
+			MaxItems:    1,
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 	}
@@ -286,6 +291,7 @@ func getCanaryConfigMetricQueryAnalysisConfiguration() map[string]*schema.Schema
 			Type:        schema.TypeList,
 			Description: "Canary analysis configuration",
 			Required:    true,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: getCanaryConfigMetricQueryAnalysisConfigurationCanary(),
 			},
@@ -325,6 +331,7 @@ func getCanaryConfigMetricQueryAnalysisConfigurationCanary() map[string]*schema.
 			Type:        schema.TypeList,
 			Description: "Controls how much different the metric needs to be",
 			Optional:    true,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"allowed_increase": {
@@ -358,6 +365,7 @@ func getCanaryConfigMetricQueryAnalysisConfigurationCanary() map[string]*schema.
 			Type:        schema.TypeList,
 			Description: "Controls how to classify and handle outliers",
 			Optional:    true,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"strategy": {
