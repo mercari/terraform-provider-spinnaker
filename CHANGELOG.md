@@ -1,4 +1,6 @@
-## 0.2.2 (Unreleased)
+## v0.2.3 (Unreleased)
+
+## v0.2.2 (Auguest 12, 2020)
 ### Improvements
 * Add `spinnaker_canary_config` resource/data source for defining canary config. ([#55](https://github.com/mercari/terraform-provider-spinnaker/pull/55))
     * Note that this currently supports only Cloud Monitoring.
