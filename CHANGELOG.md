@@ -7,6 +7,9 @@
 ### Bug fixes
 * Fixed `gate_endpoint` attribute is not loaded. ([#52](https://github.com/mercari/terraform-provider-spinnaker/pull/52))
 
+### Planned breaking change
+* Add prefix `v` from next release([#59](https://github.com/mercari/terraform-provider-spinnaker/pull/59)
+
 ## 0.2.1 (July 27, 2020)
 ### Bug fixes
 
