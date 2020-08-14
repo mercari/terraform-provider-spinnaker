@@ -1,4 +1,20 @@
-## 0.2.2 (Unreleased)
+## v0.2.4 (Unreleased)
+
+## v0.2.3 (August 14, 2020)
+### Bug fixes
+* Fixed validation errors if the user uses deprecated `application` for `spinnaker_application` resource. [#63](https://github.com/mercari/terraform-provider-spinnaker/pull/63)
+
+## v0.2.2 (August 12, 2020)
+### Improvements
+* Add `spinnaker_canary_config` resource/data source for defining canary config. ([#55](https://github.com/mercari/terraform-provider-spinnaker/pull/55))
+    * Note that this currently supports only Cloud Monitoring.
+* Introduce [Terraform Plugin SDK](https://www.terraform.io/docs/extend/plugin-sdk.html). ([#56](https://github.com/mercari/terraform-provider-spinnaker/pull/56))
+
+### Bug fixes
+* Fixed `gate_endpoint` attribute is not loaded. ([#52](https://github.com/mercari/terraform-provider-spinnaker/pull/52))
+
+### Breaking change
+* Add prefix `v` from next release([#59](https://github.com/mercari/terraform-provider-spinnaker/pull/59)
 
 ## 0.2.1 (July 27, 2020)
 ### Bug fixes

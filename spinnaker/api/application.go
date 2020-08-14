@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/mitchellh/mapstructure"
 	gate "github.com/spinnaker/spin/cmd/gateclient"
 )
@@ -56,7 +56,7 @@ func NewCreateApplicationTask(d *schema.ResourceData) (CreateApplicationTask, er
 		cloudProviders := make([]string, len(input))
 		for k, input := range v.([]interface{}) {
 			cloudProvider := input.(string)
-			if err := validateSpinnakerApplicationNameByCloudProvider(d.Get("name").(string), cloudProvider); err != nil {
+			if err := validateSpinnakerApplicationNameByCloudProvider(GetApplicationName(d), cloudProvider); err != nil {
 				return nil, err
 			}
 
@@ -158,7 +158,7 @@ func CreateApplication(client *gate.GatewayClient, createAppTask CreateApplicati
 		return err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return fmt.Errorf("Encountered an error saving application, status code: %data-resources", resp.StatusCode)
+		return fmt.Errorf("Encountered an error saving application, status code: %d", resp.StatusCode)
 	}
 	if !taskSucceeded(task) {
 		return fmt.Errorf("Encountered an error saving application, task output was: %v", task)

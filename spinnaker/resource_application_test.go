@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/acctest"
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 	"github.com/mercari/terraform-provider-spinnaker/spinnaker/api"
 )
 
@@ -186,4 +186,33 @@ resource "spinnaker_application" "test" {
 	cloud_providers = [%q]
 }
 `, rName, provider)
+}
+
+
+func TestValidateApplicationName(t *testing.T) {
+	validNames := []string{
+		"ValidName",
+		"validname",
+		"invalid-name",
+	}
+	for _, v := range validNames {
+		_, errors := validateSpinnakerApplicationName(v, "application")
+		if len(errors) != 0 {
+			t.Fatalf("%q should be a valid Application name: %q", v, errors)
+		}
+	}
+
+	invalidNames := []string{
+		"invalid:name",
+		"invalid name",
+		"invalid_name",
+		"",
+	}
+
+	for _, v := range invalidNames {
+		_, errors := validateSpinnakerApplicationName(v, "application")
+		if len(errors) == 0 {
+			t.Fatalf("%q should be a valid Application name", v)
+		}
+	}
 }
