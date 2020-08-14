@@ -56,7 +56,7 @@ func NewCreateApplicationTask(d *schema.ResourceData) (CreateApplicationTask, er
 		cloudProviders := make([]string, len(input))
 		for k, input := range v.([]interface{}) {
 			cloudProvider := input.(string)
-			if err := validateSpinnakerApplicationNameByCloudProvider(d.Get("name").(string), cloudProvider); err != nil {
+			if err := validateSpinnakerApplicationNameByCloudProvider(GetApplicationName(d), cloudProvider); err != nil {
 				return nil, err
 			}
 

@@ -22,6 +22,7 @@ func resourceSpinnakerApplication() *schema.Resource {
 				Deprecated:    "use `name` instead",
 				Optional:      true,
 				ConflictsWith: []string{"name"},
+				ValidateFunc:  validateSpinnakerApplicationName,
 			},
 			"name": {
 				Description:  "Name of the Application",

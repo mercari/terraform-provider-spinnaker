@@ -1,6 +1,10 @@
-## v0.2.3 (Unreleased)
+## v0.2.4 (Unreleased)
 
-## v0.2.2 (Auguest 12, 2020)
+## v0.2.3 (August 14, 2020)
+### Bug fixes
+* Fixed validation errors if the user uses deprecated `application` for `spinnaker_application` resource. [#63](https://github.com/mercari/terraform-provider-spinnaker/pull/63)
+
+## v0.2.2 (August 12, 2020)
 ### Improvements
 * Add `spinnaker_canary_config` resource/data source for defining canary config. ([#55](https://github.com/mercari/terraform-provider-spinnaker/pull/55))
     * Note that this currently supports only Cloud Monitoring.
