@@ -1,11 +1,14 @@
 package spinnaker
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/mercari/terraform-provider-spinnaker/spinnaker/api"
 )
 
@@ -15,6 +18,7 @@ const (
 
 func resourceSpinnakerApplication() *schema.Resource {
 	return &schema.Resource{
+		Description: "Provides a Spinnaker application resourc",
 		Schema: map[string]*schema.Schema{
 			"application": {
 				Description:   "Name of the Application",
@@ -58,13 +62,12 @@ func resourceSpinnakerApplication() *schema.Resource {
 				},
 			},
 		},
-		Create: resourceSpinnakerApplicationCreate,
-		Read:   resourceSpinnakerApplicationRead,
-		Update: resourceSpinnakerApplicationUpdate,
-		Delete: resourceSpinnakerApplicationDelete,
-		Exists: resourceSpinnakerApplicationExists,
+		CreateContext: resourceSpinnakerApplicationCreate,
+		ReadContext:   resourceSpinnakerApplicationRead,
+		UpdateContext: resourceSpinnakerApplicationUpdate,
+		DeleteContext: resourceSpinnakerApplicationDelete,
 		Importer: &schema.ResourceImporter{
-			State: resourceSpinnakerApplicationImport,
+			StateContext: resourceSpinnakerApplicationImport,
 		},
 	}
 }
@@ -88,32 +91,34 @@ type Permissions struct {
 	Write   []string `json:"WRITE"`
 }
 
-func resourceSpinnakerApplicationCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceSpinnakerApplicationCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	clientConfig := meta.(gateConfig)
+	var diags diag.Diagnostics
 	client := clientConfig.client
 	appName := api.GetApplicationName(d)
 
 	task, err := api.NewCreateApplicationTask(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if err := api.CreateApplication(client, task); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	d.SetId(appName)
-	return resourceSpinnakerApplicationRead(d, meta)
+	return diags
 }
 
-func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) error {
+func resourceSpinnakerApplicationRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	clientConfig := meta.(gateConfig)
+	var diags diag.Diagnostics
 	client := clientConfig.client
 	appName := api.GetApplicationName(d)
 
 	app := &applicationRead{}
 	if err := api.GetApplication(client, appName, app); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if app == nil {
@@ -143,66 +148,46 @@ func resourceSpinnakerApplicationRead(d *schema.ResourceData, meta interface{}) 
 	if v := app.Attributes.Permissions; v != nil {
 		tfPermissions, err := buildTerraformPermissions(v)
 		if err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 
 		d.Set("permissions", tfPermissions)
 	}
 
-	return nil
+	return diags
 }
 
-func resourceSpinnakerApplicationUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceSpinnakerApplicationUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
 	task, err := api.NewCreateApplicationTask(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if err := api.CreateApplication(client, task); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
-	return resourceSpinnakerApplicationRead(d, meta)
+	return resourceSpinnakerApplicationRead(ctx, d, meta)
 }
 
-func resourceSpinnakerApplicationDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceSpinnakerApplicationDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	clientConfig := meta.(gateConfig)
+	var diags diag.Diagnostics
 	client := clientConfig.client
 	appName := api.GetApplicationName(d)
 
 	if err := api.DeleteApplication(client, appName); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	d.SetId("")
-	return nil
+	return diags
 }
 
-func resourceSpinnakerApplicationExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	clientConfig := meta.(gateConfig)
-	client := clientConfig.client
-	appName := api.GetApplicationName(d)
-
-	var app applicationRead
-	if err := api.GetApplication(client, appName, &app); err != nil {
-		errmsg := err.Error()
-		if strings.Contains(errmsg, "not found") {
-			return false, nil
-		}
-		return false, err
-	}
-
-	if app.Name == "" {
-		return false, nil
-	}
-
-	return true, nil
-}
-
-func resourceSpinnakerApplicationImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceSpinnakerApplicationRead(d, meta); err != nil {
-		return nil, err
+func resourceSpinnakerApplicationImport(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	if diags := resourceSpinnakerApplicationRead(context.Background(), d, meta); diags.HasError() {
+		return nil, fmt.Errorf("failed to read spinnaker application")
 	}
 	return []*schema.ResourceData{d}, nil
 }

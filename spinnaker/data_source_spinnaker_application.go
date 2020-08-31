@@ -1,7 +1,7 @@
 package spinnaker
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func datasourceApplication() *schema.Resource {
@@ -35,6 +35,6 @@ func datasourceApplication() *schema.Resource {
 				Computed: true,
 			},
 		},
-		Read: resourceSpinnakerProjectRead,
+		ReadContext: resourceSpinnakerApplicationRead,
 	}
 }
