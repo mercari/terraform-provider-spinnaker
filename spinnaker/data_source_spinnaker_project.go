@@ -6,6 +6,7 @@ import (
 
 func datasourceProject() *schema.Resource {
 	return &schema.Resource{
+		Description: "Provides a Spinnaker project resource",
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:     schema.TypeString,
@@ -29,6 +30,6 @@ func datasourceProject() *schema.Resource {
 				},
 			},
 		},
-		Read: resourceSpinnakerProjectRead,
+		ReadContext: resourceSpinnakerProjectRead,
 	}
 }

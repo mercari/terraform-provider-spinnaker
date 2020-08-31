@@ -6,6 +6,7 @@ import (
 
 func datasourceApplication() *schema.Resource {
 	return &schema.Resource{
+		Description: "Provides a Spinnaker application resource",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:         schema.TypeString,

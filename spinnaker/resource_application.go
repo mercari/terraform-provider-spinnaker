@@ -18,7 +18,7 @@ const (
 
 func resourceSpinnakerApplication() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Spinnaker application resourc",
+		Description: "Provides a Spinnaker application resource",
 		Schema: map[string]*schema.Schema{
 			"application": {
 				Description:   "Name of the Application",

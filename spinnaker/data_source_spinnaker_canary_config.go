@@ -6,6 +6,7 @@ import (
 
 func datasourceCanaryConfig() *schema.Resource {
 	return &schema.Resource{
+		Description: "Provides a Spinnaker canary config resource",
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Description: "Canary config id",

@@ -1,7 +1,10 @@
 package spinnaker
 
 import (
-	"strings"
+	"context"
+	"fmt"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/mercari/terraform-provider-spinnaker/spinnaker/api"
@@ -9,6 +12,7 @@ import (
 
 func resourceSpinnakerProject() *schema.Resource {
 	return &schema.Resource{
+		Description: "Provides a Spinnaker project resource",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Description:  "Name of the project",
@@ -30,13 +34,12 @@ func resourceSpinnakerProject() *schema.Resource {
 				},
 			},
 		},
-		Create: resourceSpinnakerProjectCreate,
-		Read:   resourceSpinnakerProjectRead,
-		Update: resourceSpinnakerProjectUpdate,
-		Delete: resourceSpinnakerProjectDelete,
-		Exists: resourceSpinnakerProjectExists,
+		CreateContext: resourceSpinnakerProjectCreate,
+		ReadContext:   resourceSpinnakerProjectRead,
+		UpdateContext: resourceSpinnakerProjectUpdate,
+		DeleteContext: resourceSpinnakerProjectDelete,
 		Importer: &schema.ResourceImporter{
-			State: resourceSpinnakerProjectImport,
+			StateContext: resourceSpinnakerProjectImport,
 		},
 	}
 }
@@ -65,26 +68,27 @@ type PipelineConfig struct {
 	ID          string `json:"pipelineConfigId"`
 }
 
-func resourceSpinnakerProjectCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceSpinnakerProjectCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
 	projectName := d.Get("name").(string)
 
 	task, err := api.NewUpsertApplicationTask(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if err := api.CreateProject(client, task); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	d.SetId(projectName)
-	return resourceSpinnakerProjectRead(d, meta)
+	return resourceSpinnakerProjectRead(ctx, d, meta)
 }
 
-func resourceSpinnakerProjectRead(d *schema.ResourceData, meta interface{}) error {
+func resourceSpinnakerProjectRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	clientConfig := meta.(gateConfig)
+	var diags diag.Diagnostics
 	client := clientConfig.client
 	projectName := d.Get("name").(string)
 	if projectName == "" {
@@ -93,7 +97,7 @@ func resourceSpinnakerProjectRead(d *schema.ResourceData, meta interface{}) erro
 
 	app := &projectRead{}
 	if err := api.GetProject(client, projectName, app); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if app == nil {
@@ -115,61 +119,41 @@ func resourceSpinnakerProjectRead(d *schema.ResourceData, meta interface{}) erro
 		d.Set("config", v)
 	}
 
-	return nil
+	return diags
 }
 
-func resourceSpinnakerProjectUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceSpinnakerProjectUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
 	task, err := api.NewCreateApplicationTask(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if err := api.CreateApplication(client, task); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
-	return resourceSpinnakerProjectRead(d, meta)
+	return resourceSpinnakerProjectRead(ctx, d, meta)
 }
 
-func resourceSpinnakerProjectDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceSpinnakerProjectDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	clientConfig := meta.(gateConfig)
+	var diags diag.Diagnostics
 	client := clientConfig.client
 	id := d.Id()
 	appName := d.Get("name").(string)
 
 	if err := api.DeleteProject(client, id, appName); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	d.SetId("")
-	return nil
+	return diags
 }
 
-func resourceSpinnakerProjectExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	clientConfig := meta.(gateConfig)
-	client := clientConfig.client
-	appName := d.Get("name").(string)
-
-	var app applicationRead
-	if err := api.GetApplication(client, appName, &app); err != nil {
-		errmsg := err.Error()
-		if strings.Contains(errmsg, "not found") {
-			return false, nil
-		}
-		return false, err
-	}
-
-	if app.Name == "" {
-		return false, nil
-	}
-
-	return true, nil
-}
-
-func resourceSpinnakerProjectImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceSpinnakerProjectRead(d, meta); err != nil {
-		return nil, err
+func resourceSpinnakerProjectImport(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	if diags := resourceSpinnakerProjectRead(ctx, d, meta); diags.HasError() {
+		return nil, fmt.Errorf("failed to read project")
 	}
 	return []*schema.ResourceData{d}, nil
 }
