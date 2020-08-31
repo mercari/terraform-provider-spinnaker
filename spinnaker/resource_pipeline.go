@@ -11,6 +11,7 @@ import (
 
 func resourcePipeline() *schema.Resource {
 	return &schema.Resource{
+		DeprecationMessage: "Pipeline deprecated because is not HCL native. We plan to support in the next major release",
 		Schema: map[string]*schema.Schema{
 			"application": {
 				Type:         schema.TypeString,
