@@ -45,6 +45,6 @@ func datasourceCanaryConfig() *schema.Resource {
 				},
 			},
 		},
-		Read: resourceSpinnakerCanaryConfigRead,
+		ReadContext: resourceSpinnakerCanaryConfigRead,
 	}
 }
