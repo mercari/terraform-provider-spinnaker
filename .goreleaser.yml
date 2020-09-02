@@ -1,13 +1,14 @@
-# Copied from https://github.com/hashicorp/terraform-provider-scaffolding/blob/master/.goreleaser.yml
-# as suggested at https://www.terraform.io/docs/registry/providers/publishing.html#using-goreleaser-locally
-#
 # Visit https://goreleaser.com for documentation on how to customize this
 # behavior.
 before:
   hooks:
+    # this is just an example and not a requirement for provider building/publishing
     - go mod tidy
 builds:
 - env:
+    # goreleaser does not work with CGO, it could also complicate
+    # usage by users in CI/CD systems like Terraform Cloud where
+    # they are unable to install libraries.
     - CGO_ENABLED=0
   mod_timestamp: '{{ .CommitTimestamp }}'
   flags:
@@ -15,6 +16,7 @@ builds:
   ldflags:
     - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}}'
   goos:
+    - freebsd
     - windows
     - linux
     - darwin
@@ -28,11 +30,7 @@ builds:
       goarch: '386'
   binary: '{{ .ProjectName }}_v{{ .Version }}'
 archives:
-- id: zip
-  format: zip
-  name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
-- id: default
-  format: tar.gz
+- format: zip
   name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
 checksum:
   name_template: '{{ .ProjectName }}_{{ .Version }}_SHA256SUMS'
@@ -50,7 +48,7 @@ signs:
       - "--detach-sign"
       - "${artifact}"
 release:
-  # Visit your project's GitHub Releases page to publish this release.
-  draft: false
+  # If you want to manually examine the release before its live, uncomment this line:
+  # draft: true
 changelog:
-  skip: false
+  skip: true
