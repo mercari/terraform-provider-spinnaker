@@ -1,4 +1,7 @@
 ## v0.2.4 (Unreleased)
+### Improvements
+* Upgrade Terraform Plugin SDK to v2 ([#67](https://github.com/mercari/terraform-provider-spinnaker/pull/67)
+
 ### Bug fixes
 * Fixed data source not showing in Terraform Registry. ([#66](https://github.com/mercari/terraform-provider-spinnaker/pull/66))
 * Fixed broken `tgz` provider artifact. ([#67](https://github.com/mercari/terraform-provider-spinnaker/pull/68))

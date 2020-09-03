@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/acctest"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/acctest"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"github.com/mercari/terraform-provider-spinnaker/spinnaker/api"
 )
 
@@ -187,7 +187,6 @@ resource "spinnaker_application" "test" {
 }
 `, rName, provider)
 }
-
 
 func TestValidateApplicationName(t *testing.T) {
 	validNames := []string{

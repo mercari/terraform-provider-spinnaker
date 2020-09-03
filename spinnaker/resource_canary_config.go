@@ -1,16 +1,19 @@
 package spinnaker
 
 import (
+	"context"
 	"fmt"
 	"regexp"
-	"strings"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/mercari/terraform-provider-spinnaker/spinnaker/api"
 )
 
 func resourceSpinnakerCanaryConfig() *schema.Resource {
 	return &schema.Resource{
+		Description: "Provides a Spinnaker canary config resource",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Description:  "Name of the canary configuration",
@@ -49,13 +52,12 @@ func resourceSpinnakerCanaryConfig() *schema.Resource {
 				},
 			},
 		},
-		Create: resourceSpinnakerCanaryConfigCreate,
-		Read:   resourceSpinnakerCanaryConfigRead,
-		Update: resourceSpinnakerCanaryConfigUpdate,
-		Delete: resourceSpinnakerCanaryConfigDelete,
-		Exists: resourceSpinnakerCanaryConfigExists,
+		CreateContext: resourceSpinnakerCanaryConfigCreate,
+		ReadContext:   resourceSpinnakerCanaryConfigRead,
+		UpdateContext: resourceSpinnakerCanaryConfigUpdate,
+		DeleteContext: resourceSpinnakerCanaryConfigDelete,
 		Importer: &schema.ResourceImporter{
-			State: resourceSpinnakerCanaryConfigImport,
+			StateContext: resourceSpinnakerCanaryConfigImport,
 		},
 	}
 }
@@ -91,31 +93,31 @@ type classifier struct {
 	groupWeights map[string]int `json:"groupWeights"`
 }
 
-func resourceSpinnakerCanaryConfigCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceSpinnakerCanaryConfigCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
 	config, err := api.NewCanaryConfig(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	id, err := api.CreateCanaryConfig(client, config)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	d.SetId(id)
-	return resourceSpinnakerCanaryConfigRead(d, meta)
+	return resourceSpinnakerCanaryConfigRead(ctx, d, meta)
 }
 
-func resourceSpinnakerCanaryConfigRead(d *schema.ResourceData, meta interface{}) error {
+func resourceSpinnakerCanaryConfigRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
 	id := d.Id()
 
 	config := &canaryConfigRead{}
 	if err := api.GetCanaryConfig(client, id, config); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if v := config.name; v != "" {
@@ -150,58 +152,38 @@ func resourceSpinnakerCanaryConfigRead(d *schema.ResourceData, meta interface{})
 	return nil
 }
 
-func resourceSpinnakerCanaryConfigUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceSpinnakerCanaryConfigUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	clientConfig := meta.(gateConfig)
 	client := clientConfig.client
 	config, err := api.NewCanaryConfig(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	id := d.Id()
 	if err := api.UpdateCanaryConfig(client, id, config); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
-	return resourceSpinnakerApplicationRead(d, meta)
+	return resourceSpinnakerCanaryConfigRead(ctx, d, meta)
 }
 
-func resourceSpinnakerCanaryConfigDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceSpinnakerCanaryConfigDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	clientConfig := meta.(gateConfig)
+	var diags diag.Diagnostics
 	client := clientConfig.client
 	id := d.Id()
 	if err := api.DeleteCanaryConfig(client, id); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	d.SetId("")
-	return nil
+	return diags
 }
 
-func resourceSpinnakerCanaryConfigExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	clientConfig := meta.(gateConfig)
-	client := clientConfig.client
-	id := d.Id()
-
-	var cfg canaryConfigRead
-	if err := api.GetCanaryConfig(client, id, &cfg); err != nil {
-		errmsg := err.Error()
-		if strings.Contains(errmsg, "not found") {
-			return false, nil
-		}
-		return false, err
-	}
-
-	if cfg.id == "" {
-		return false, nil
-	}
-
-	return true, nil
-}
-
-func resourceSpinnakerCanaryConfigImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceSpinnakerCanaryConfigRead(d, meta); err != nil {
-		return nil, err
+func resourceSpinnakerCanaryConfigImport(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	if diags := resourceSpinnakerCanaryConfigRead(ctx, d, meta); diags.HasError() {
+		return nil, fmt.Errorf("failed to read canary config")
 	}
 	return []*schema.ResourceData{d}, nil
 }
