@@ -1,6 +1,7 @@
 ## v0.2.4 (Unreleased)
 ### Bug fixes
 * Fixed data source not showing in Terraform Registry. ([#66](https://github.com/mercari/terraform-provider-spinnaker/pull/66))
+* Fixed broken `tgz` provider artifact. ([#67](https://github.com/mercari/terraform-provider-spinnaker/pull/68))
 
 ## v0.2.3 (August 14, 2020)
 ### Bug fixes
