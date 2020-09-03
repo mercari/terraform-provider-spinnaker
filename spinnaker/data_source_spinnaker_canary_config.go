@@ -1,11 +1,12 @@
 package spinnaker
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func datasourceCanaryConfig() *schema.Resource {
 	return &schema.Resource{
+		Description: "Provides a Spinnaker canary config resource",
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Description: "Canary config id",
@@ -45,6 +46,6 @@ func datasourceCanaryConfig() *schema.Resource {
 				},
 			},
 		},
-		Read: resourceSpinnakerCanaryConfigRead,
+		ReadContext: resourceSpinnakerCanaryConfigRead,
 	}
 }

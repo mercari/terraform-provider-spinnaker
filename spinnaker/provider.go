@@ -1,9 +1,9 @@
 package spinnaker
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"os"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	gate "github.com/spinnaker/spin/cmd/gateclient"
 	"github.com/spinnaker/spin/cmd/output"
 )

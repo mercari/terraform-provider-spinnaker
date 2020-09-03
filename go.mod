@@ -8,14 +8,10 @@ require (
 	github.com/aws/aws-sdk-go v1.30.12 // indirect
 	github.com/ghodss/yaml v1.0.0
 	github.com/hashicorp/errwrap v1.1.0 // indirect
-	github.com/hashicorp/go-getter v1.5.0 // indirect
-	github.com/hashicorp/go-hclog v0.15.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
-	github.com/hashicorp/go-plugin v1.4.0 // indirect
 	github.com/hashicorp/go-uuid v1.0.2 // indirect
 	github.com/hashicorp/hcl/v2 v2.7.2 // indirect
-	github.com/hashicorp/terraform-exec v0.12.0 // indirect
-	github.com/hashicorp/terraform-plugin-sdk v1.16.0
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.4.0
 	github.com/hashicorp/yamux v0.0.0-20200609203250-aecfd211c9ce // indirect
 	github.com/mitchellh/cli v1.1.2 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect

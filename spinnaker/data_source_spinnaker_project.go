@@ -1,11 +1,12 @@
 package spinnaker
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func datasourceProject() *schema.Resource {
 	return &schema.Resource{
+		Description: "Provides a Spinnaker project resource",
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:     schema.TypeString,
@@ -29,6 +30,6 @@ func datasourceProject() *schema.Resource {
 				},
 			},
 		},
-		Read: resourceSpinnakerProjectRead,
+		ReadContext: resourceSpinnakerProjectRead,
 	}
 }

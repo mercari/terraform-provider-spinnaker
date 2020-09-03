@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/mercari/terraform-provider-spinnaker/spinnaker/api"
 )
 
 func resourcePipeline() *schema.Resource {
 	return &schema.Resource{
+		DeprecationMessage: "Pipeline deprecated because is not HCL native. We plan to support in the next major release",
 		Schema: map[string]*schema.Schema{
 			"application": {
 				Type:         schema.TypeString,
