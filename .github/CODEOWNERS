@@ -1,1 +1,9 @@
-* 19yamashita15@gmail.com
+# This is a CODEOWNERS file to define individuals or teams that are responsible
+# for code in a repository.
+#
+# For more detail about CODEOWNERS, refer to following articles:
+#   - https://help.github.com/articles/about-codeowners/
+#   - https://blog.github.com/2017-07-06-introducing-code-owners/
+
+# The default owner
+* @KeisukeYamashita
