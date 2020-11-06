@@ -46,10 +46,10 @@ jobs:
             ${{ runner.os }}-go-
       - name: Import GPG key
         id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v2
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          PASSPHRASE: ${{ secrets.PASSPHRASE }}
+        uses: crazy-max/ghaction-import-gpg@v3
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphase: ${{ secrets.PASSPHRASE }}
       - name: Release provider
         uses: goreleaser/goreleaser-action@v1
         with:
