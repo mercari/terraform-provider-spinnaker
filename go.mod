@@ -6,7 +6,7 @@ require (
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/aws/aws-sdk-go v1.30.12 // indirect
 	github.com/ghodss/yaml v1.0.0
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.0.2-0.20200828083434-d39628234432
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.2.0
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/mitchellh/mapstructure v1.3.3
 	github.com/posener/complete v1.2.1 // indirect
