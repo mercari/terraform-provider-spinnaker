@@ -51,7 +51,7 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphase: ${{ secrets.PASSPHRASE }}
       - name: Release provider
-        uses: goreleaser/goreleaser-action@v1
+        uses: goreleaser/goreleaser-action@v2.4.0
         with:
           version: latest
           args: release --rm-dist
