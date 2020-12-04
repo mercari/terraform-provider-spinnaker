@@ -2,8 +2,6 @@ package spinnaker
 
 import (
 	"fmt"
-	"log"
-	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
@@ -22,7 +20,7 @@ func TestAccResourceSourceSpinnakerApplication_basic(t *testing.T) {
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckSpinnakerApplicatioDestroy(resourceName),
+		CheckDestroy: testAccCheckSpinnakerApplicatioDestroy(t, resourceName),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccSpinnakerApplication_basic(rName),
@@ -39,13 +37,12 @@ func TestAccResourceSourceSpinnakerApplication_basic(t *testing.T) {
 
 func TestAccResourceSourceSpinnakerApplication_instancePort(t *testing.T) {
 	resourceName := "spinnaker_application.test"
-	rand.Seed(time.Now().UnixNano())
 	rName := acctest.RandomWithPrefix("tf-acc-test")
-	rPort := rand.Intn(8000) + 1 // avoid 0
+	rPort := acctest.RandIntRange(1, 1<<16)
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckSpinnakerApplicatioDestroy(resourceName),
+		CheckDestroy: testAccCheckSpinnakerApplicatioDestroy(t, resourceName),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccSpinnakerApplication_instancePort(rName, rPort),
@@ -67,7 +64,7 @@ func TestAccResourceSourceSpinnakerApplication_cloudProviders(t *testing.T) {
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckSpinnakerApplicatioDestroy(resourceName),
+		CheckDestroy: testAccCheckSpinnakerApplicatioDestroy(t, resourceName),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccSpinnakerApplication_cloudProvider(rName, cloudProvider),
@@ -76,13 +73,14 @@ func TestAccResourceSourceSpinnakerApplication_cloudProviders(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "name", rName),
 					resource.TestCheckResourceAttr(resourceName, "email", "acceptance@test.com"),
 					resource.TestCheckResourceAttr(resourceName, "instance_port", strconv.Itoa(defaultInstancePort)),
+					resource.TestCheckResourceAttr(resourceName, "cloud_providers.0", cloudProvider),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckSpinnakerApplicatioDestroy(n string) resource.TestCheckFunc {
+func testAccCheckSpinnakerApplicatioDestroy(t *testing.T, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {
@@ -97,29 +95,16 @@ func testAccCheckSpinnakerApplicatioDestroy(n string) resource.TestCheckFunc {
 		client := testAccProvider.Meta().(gateConfig).client
 		app := &applicationRead{}
 
-		retry := 5
-		for {
+		for retries := 1; retries <= 5; retries++ {
 			if err := api.GetApplication(client, appName, app); err != nil {
 				if strings.Contains(err.Error(), "not found") {
 					return nil
 				}
-
 				return err
 			}
-
-			if app == nil {
-				return nil
-			}
-
-			if app != nil {
-				retry--
-				log.Printf("[INFO] Retring CheckDestroy in 1 seconds, retry count: %v", 5-retry)
-				time.Sleep(1 * time.Second)
-			}
-
-			if retry <= 0 {
-				break
-			}
+			retryInterval := time.Duration(1<<retries) * time.Second
+			t.Logf("[INFO] Retring CheckDestroy in %s, retry count: %v", retryInterval, retries)
+			time.Sleep(retryInterval)
 		}
 
 		return fmt.Errorf("Spinnaker Application still exists, application: %s", appName)
@@ -140,7 +125,7 @@ func testAccCheckSpinnakerApplicationExists(n string) resource.TestCheckFunc {
 		err := resource.Retry(1*time.Minute, func() *resource.RetryError {
 			_, resp, err := client.ApplicationControllerApi.GetApplicationUsingGET(client.Context, rs.Primary.ID, nil)
 			if resp != nil {
-				if resp != nil && resp.StatusCode == http.StatusNotFound {
+				if resp.StatusCode == http.StatusNotFound {
 					return resource.RetryableError(fmt.Errorf("application does not exit"))
 				} else if resp.StatusCode != http.StatusOK {
 					return resource.NonRetryableError(fmt.Errorf("encountered an error getting application, status code: %d", resp.StatusCode))

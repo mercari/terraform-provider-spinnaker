@@ -24,8 +24,11 @@ func datasourceApplication() *schema.Resource {
 				Computed: true,
 			},
 			"cloud_providers": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeList,
 				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 			"instance_port": {
 				Type:     schema.TypeString,
