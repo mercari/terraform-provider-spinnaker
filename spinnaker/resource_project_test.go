@@ -50,7 +50,7 @@ func testAccCheckSpinnakerProjectExists(n string) resource.TestCheckFunc {
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					return resource.RetryableError(fmt.Errorf("application does not exit"))
 				} else if resp.StatusCode != http.StatusOK {
-					return resource.NonRetryableError(fmt.Errorf("encountered an error getting application, status code: %data-resources", resp.StatusCode))
+					return resource.NonRetryableError(fmt.Errorf("encountered an error getting application, status code: %d", resp.StatusCode))
 				}
 			}
 			if err != nil {
