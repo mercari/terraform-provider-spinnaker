@@ -6,10 +6,12 @@ import (
 
 	"github.com/mitchellh/mapstructure"
 	gate "github.com/spinnaker/spin/cmd/gateclient"
+	gateclient "github.com/spinnaker/spin/gateapi"
 )
 
 func CreatePipeline(client *gate.GatewayClient, pipeline interface{}) error {
-	resp, err := client.PipelineControllerApi.SavePipelineUsingPOST(client.Context, pipeline)
+	opts := &gateclient.PipelineControllerApiSavePipelineUsingPOSTOpts{}
+	resp, err := client.PipelineControllerApi.SavePipelineUsingPOST(client.Context, pipeline, opts)
 
 	if err != nil {
 		return err
