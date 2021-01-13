@@ -23,7 +23,6 @@ require (
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/posener/complete v1.2.3 // indirect
-	github.com/spf13/pflag v1.0.3
 	github.com/spinnaker/spin v0.4.1-0.20201021165946-a6921971adf4
 	github.com/zclconf/go-cty v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c // indirect
