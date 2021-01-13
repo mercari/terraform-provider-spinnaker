@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/mitchellh/mapstructure"
 	gate "github.com/spinnaker/spin/cmd/gateclient"
+	gateclient "github.com/spinnaker/spin/gateapi"
 )
 
 var (
@@ -110,7 +111,8 @@ func NewCreateApplicationTask(d *schema.ResourceData) (CreateApplicationTask, er
 
 // GetApplication gets an application from Spinnaker Gate
 func GetApplication(client *gate.GatewayClient, appName string, dest interface{}) error {
-	app, resp, err := client.ApplicationControllerApi.GetApplicationUsingGET(client.Context, appName, map[string]interface{}{})
+	opts := &gateclient.ApplicationControllerApiGetApplicationUsingGETOpts{}
+	app, resp, err := client.ApplicationControllerApi.GetApplicationUsingGET(client.Context, appName, opts)
 	if resp != nil {
 		if resp != nil && resp.StatusCode == http.StatusNotFound {
 			return fmt.Errorf("Application '%s' not found", appName)
