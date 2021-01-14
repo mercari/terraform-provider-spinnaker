@@ -50,7 +50,7 @@ jobs:
         uses: crazy-max/ghaction-import-gpg@v3
         with:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphase: ${{ secrets.PASSPHRASE }}
+          passphrase: ${{ secrets.PASSPHRASE }}
       - name: Release provider
         uses: goreleaser/goreleaser-action@v1
         with:
