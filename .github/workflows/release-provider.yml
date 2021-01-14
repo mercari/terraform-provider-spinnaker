@@ -13,10 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Setup Go
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@v2.1.3
         with:
-          go-version: 1.13
-      - uses: actions/cache@v1
+          go-version: 1.15
+      - uses: actions/cache@v2.1.3
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -36,10 +36,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Setup Go
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@v2.1.3
         with:
-          go-version: 1.13
-      - uses: actions/cache@v1
+          go-version: 1.15
+      - uses: actions/cache@v2.1.3
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -47,10 +47,10 @@ jobs:
             ${{ runner.os }}-go-
       - name: Import GPG key
         id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v2
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          PASSPHRASE: ${{ secrets.PASSPHRASE }}
+        uses: crazy-max/ghaction-import-gpg@v3
+        with:
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphase: ${{ secrets.PASSPHRASE }}
       - name: Release provider
         uses: goreleaser/goreleaser-action@v1
         with:

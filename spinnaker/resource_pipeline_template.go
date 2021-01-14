@@ -8,12 +8,13 @@ import (
 	"reflect"
 
 	"github.com/ghodss/yaml"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/mercari/terraform-provider-spinnaker/spinnaker/api"
 )
 
 func resourcePipelineTemplate() *schema.Resource {
 	return &schema.Resource{
+		DeprecationMessage: "Pipeline template deprecated because is not HCL native. We plan to support in the next major release",
 		Schema: map[string]*schema.Schema{
 			"template": {
 				Type:             schema.TypeString,
