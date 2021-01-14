@@ -21,7 +21,7 @@ require (
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/posener/complete v1.2.3 // indirect
-	github.com/spinnaker/spin v0.4.1-0.20201021165946-a6921971adf4
+	github.com/spinnaker/spin v0.4.1-0.20201211003717-9e6d8f2f1f78
 	github.com/zclconf/go-cty v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c // indirect
 	golang.org/x/net v0.0.0-20201207224615-747e23833adb // indirect
