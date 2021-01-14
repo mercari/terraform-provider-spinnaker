@@ -188,7 +188,6 @@ resource "spinnaker_application" "test" {
 `, rName, provider)
 }
 
-
 func TestValidateApplicationName(t *testing.T) {
 	validNames := []string{
 		"ValidName",
