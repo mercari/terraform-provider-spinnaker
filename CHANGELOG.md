@@ -1,7 +1,3 @@
-## v0.2.4 (Unreleased)
-### Improvements
-* Upgrade Terraform Plugin SDK to v2 ([#67](https://github.com/mercari/terraform-provider-spinnaker/pull/67)
-
 <a name="v0.2.4"></a>
 ## [v0.2.4] - 2020-09-04
 ### Pull Requests
