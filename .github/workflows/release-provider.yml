@@ -14,7 +14,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2.1.3
         with:
-          go-version: 1.13
+          go-version: 1.15
       - uses: actions/cache@v2.1.3
         with:
           path: ~/go/pkg/mod
@@ -37,7 +37,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2.1.3
         with:
-          go-version: 1.13
+          go-version: 1.15
       - uses: actions/cache@v2.1.3
         with:
           path: ~/go/pkg/mod
@@ -49,9 +49,9 @@ jobs:
         uses: crazy-max/ghaction-import-gpg@v3
         with:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphase: ${{ secrets.PASSPHRASE }}
+          passphrase: ${{ secrets.PASSPHRASE }}
       - name: Release provider
-        uses: goreleaser/goreleaser-action@v2.4.0
+        uses: goreleaser/goreleaser-action@v2.4.1
         with:
           version: latest
           args: release --rm-dist

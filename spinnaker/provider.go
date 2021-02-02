@@ -1,9 +1,11 @@
 package spinnaker
 
 import (
+	"os"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/spf13/pflag"
 	gate "github.com/spinnaker/spin/cmd/gateclient"
+	"github.com/spinnaker/spin/cmd/output"
 )
 
 func Provider() *schema.Provider {
@@ -74,16 +76,9 @@ func providerConfigureFunc(data *schema.ResourceData) (interface{}, error) {
 	ignoreCertErrors := data.Get("ignore_cert_errors").(bool)
 	defaultHeaders := data.Get("default_headers").(string)
 
-	flags := pflag.NewFlagSet("default", 1)
-	flags.String("gate-endpoint", gateEndpoint, "")
-	flags.Bool("quiet", false, "")
-	flags.Bool("insecure", ignoreCertErrors, "")
-	flags.Bool("no-color", true, "")
-	flags.String("output", "", "")
-	flags.String("config", config, "")
-	flags.String("default-headers", defaultHeaders, "")
+	ui := output.NewUI(false, false, output.MarshalToJson, os.Stdout, os.Stderr)
 
-	client, err := gate.NewGateClient(flags)
+	client, err := gate.NewGateClient(ui, gateEndpoint, defaultHeaders, config, ignoreCertErrors)
 	if err != nil {
 		return nil, err
 	}

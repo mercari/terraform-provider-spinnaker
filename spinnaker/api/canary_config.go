@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/mitchellh/mapstructure"
 	gate "github.com/spinnaker/spin/cmd/gateclient"
+	gateclient "github.com/spinnaker/spin/gateapi"
 )
 
 var (
@@ -289,7 +290,8 @@ func newCanaryConfigClassifier(d map[string]interface{}) (Classifier, error) {
 
 // CreateCanaryConfig creates passed canary config
 func CreateCanaryConfig(client *gate.GatewayClient, config CanaryConfig) (string, error) {
-	ref, resp, err := client.V2CanaryConfigControllerApi.CreateCanaryConfigUsingPOST(context.Background(), config, map[string]interface{}{})
+	opts := &gateclient.V2CanaryConfigControllerApiCreateCanaryConfigUsingPOSTOpts{}
+	ref, resp, err := client.V2CanaryConfigControllerApi.CreateCanaryConfigUsingPOST(context.Background(), config, opts)
 	if err != nil {
 		log.Println(fmt.Sprintf("%#v", config))
 		return "", err
@@ -303,7 +305,8 @@ func CreateCanaryConfig(client *gate.GatewayClient, config CanaryConfig) (string
 }
 
 func GetCanaryConfig(client *gate.GatewayClient, id string, dest interface{}) error {
-	conf, resp, err := client.V2CanaryConfigControllerApi.GetCanaryConfigUsingGET(context.Background(), id, map[string]interface{}{})
+	opts := &gateclient.V2CanaryConfigControllerApiGetCanaryConfigUsingGETOpts{}
+	conf, resp, err := client.V2CanaryConfigControllerApi.GetCanaryConfigUsingGET(context.Background(), id, opts)
 	if err != nil {
 		return err
 	}
@@ -320,7 +323,8 @@ func GetCanaryConfig(client *gate.GatewayClient, id string, dest interface{}) er
 }
 
 func DeleteCanaryConfig(client *gate.GatewayClient, id string) error {
-	resp, err := client.V2CanaryConfigControllerApi.DeleteCanaryConfigUsingDELETE(context.Background(), id, map[string]interface{}{})
+	opts := &gateclient.V2CanaryConfigControllerApiDeleteCanaryConfigUsingDELETEOpts{}
+	resp, err := client.V2CanaryConfigControllerApi.DeleteCanaryConfigUsingDELETE(context.Background(), id, opts)
 	if err != nil {
 		return err
 	}
@@ -333,7 +337,8 @@ func DeleteCanaryConfig(client *gate.GatewayClient, id string) error {
 }
 
 func UpdateCanaryConfig(client *gate.GatewayClient, id string, config CanaryConfig) error {
-	_, resp, err := client.V2CanaryConfigControllerApi.UpdateCanaryConfigUsingPUT(context.Background(), id, config, nil)
+	opts := &gateclient.V2CanaryConfigControllerApiUpdateCanaryConfigUsingPUTOpts{}
+	_, resp, err := client.V2CanaryConfigControllerApi.UpdateCanaryConfigUsingPUT(context.Background(), config, id, opts)
 	if err != nil {
 		return err
 	}
