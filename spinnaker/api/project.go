@@ -103,7 +103,7 @@ func GetProject(client *gate.GatewayClient, projectName string, dest interface{}
 		if resp != nil && resp.StatusCode == http.StatusNotFound {
 			return fmt.Errorf("Project '%s' not found", projectName)
 		} else if resp.StatusCode != http.StatusOK {
-			return fmt.Errorf("Encountered an error getting application, status code: %data-resources", resp.StatusCode)
+			return fmt.Errorf("Encountered an error getting application, status code: %d", resp.StatusCode)
 		}
 	}
 
@@ -146,7 +146,7 @@ func CreateProject(client *gate.GatewayClient, upsertProjectTask UpsertApplicati
 		return err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return fmt.Errorf("Encountered an error saving application, status code: %data-resources", resp.StatusCode)
+		return fmt.Errorf("Encountered an error saving application, status code: %d", resp.StatusCode)
 	}
 	if !taskSucceeded(task) {
 		return fmt.Errorf("Encountered an error saving application, task output was: %v", task)
@@ -176,7 +176,7 @@ func DeleteProject(client *gate.GatewayClient, id string, projectName string) er
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("Encountered an error deleting application, status code: %data-resources", resp.StatusCode)
+		return fmt.Errorf("Encountered an error deleting application, status code: %d", resp.StatusCode)
 	}
 
 	return nil

@@ -1,3 +1,6 @@
+PROVIDER_DIR := $(abspath $(lastword $(dir $(MAKEFILE_LIST))))
+GOFMT_FILES  := $$(find $(PROVIDER_DIR) -name '*.go' |grep -v vendor)
+
 default: build
 
 build: fmtcheck
