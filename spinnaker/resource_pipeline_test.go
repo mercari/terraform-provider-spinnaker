@@ -34,6 +34,12 @@ func TestAccResourceSourceSpinnakerPipeline_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("spinnaker_pipeline.test", "application", application),
 				),
 			},
+			{
+				ResourceName:      "spinnaker_pipeline.test",
+				ImportStateId:     fmt.Sprintf("%s%s", application, resourceName),
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
 		},
 	})
 }
@@ -81,7 +87,7 @@ func testAccCheckSpinnakerPipelineExists(resourceName string, applicationName st
 			return fmt.Errorf("No Pipeline ID is set")
 		}
 
-		if _, err := api.GetPipeline(client, applicationName, pipelineName, pipeline); err != nil  {
+		if _, err := api.GetPipeline(client, applicationName, pipelineName, pipeline); err != nil {
 			return err
 		}
 
