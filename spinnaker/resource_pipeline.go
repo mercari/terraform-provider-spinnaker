@@ -1,6 +1,7 @@
 package spinnaker
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -39,6 +40,9 @@ func resourcePipeline() *schema.Resource {
 		Update: resourcePipelineUpdate,
 		Delete: resourcePipelineDelete,
 		Exists: resourcePipelineExists,
+		Importer: &schema.ResourceImporter{
+			StateContext: resourceSpinnakerPipelineImport,
+		},
 	}
 }
 
@@ -140,6 +144,34 @@ func resourcePipelineDelete(data *schema.ResourceData, meta interface{}) error {
 	}
 
 	return nil
+}
+
+func resourceSpinnakerPipelineImport(ctx context.Context, data *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	application, name, err := resourceSpinnakerPipelineParseId(data.Id())
+	if err != nil {
+		return nil, err
+	}
+	if err := data.Set("application", application); err != nil {
+		return nil, err
+	}
+	if err:= data.Set("name", name); err != nil {
+		return nil, err
+	}
+
+	if err := resourcePipelineRead(data, meta); err != nil {
+		return nil, fmt.Errorf("failed to read spinnaker pipeline")
+	}
+	return []*schema.ResourceData{data}, nil
+}
+
+func resourceSpinnakerPipelineParseId(id string) (string, string, error) {
+	parts := strings.SplitN(id, ".", 2)
+
+	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
+		return "", "", fmt.Errorf("unexpected format of ID (%s), expected <application>.<pipeline>", id)
+	}
+
+	return parts[0], parts[1], nil
 }
 
 func resourcePipelineExists(data *schema.ResourceData, meta interface{}) (bool, error) {
