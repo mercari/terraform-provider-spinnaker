@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -242,5 +243,12 @@ func editAndEncodePipeline(pipelineMap map[string]interface{}) (encodedPipeline 
 	}
 
 	encodedPipeline = string(editedPipelineBytes)
+
+	// Remove runAsUser key if managed service accounts are being used
+	if strings.Contains(encodedPipeline, "runAsUser") {
+		re := regexp.MustCompile(",\"runAsUser\":\".*@managed-service-account\"")
+		encodedPipeline = re.ReplaceAllString(encodedPipeline, "")
+	}
+
 	return
 }
